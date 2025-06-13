@@ -4,7 +4,7 @@
 int main()
 {
     ArrayList<int> lista;
-
+//teste
     lista.add(3);
     lista.add(6);
     lista.add(10);
