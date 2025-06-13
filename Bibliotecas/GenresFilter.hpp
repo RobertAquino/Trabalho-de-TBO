@@ -9,11 +9,18 @@ class genresFilter
 
     ArrayList<Filme> genresFilter;
 
-    ArrayList<Filme> getGenresFilter(ArrayList<Filme> filmes, ArrayList<Filme> &genresFilter);
+    void getGenresFilter(const ArrayList<Filme> &filmes, ArrayList<int> &genresFilter, Genres genre);
 
 };  
 
-    ArrayList<Filme> getGenresFilter(ArrayList<Filme> filmes, ArrayList<Filme> &genresFilter, Genres genre)
+    void getGenresFilter(const ArrayList<Filme> &filmes, ArrayList<int> &genresFilter, Genres genre)
     {
-        ArrayList<Filme> filme;   
+        for(int i = 0; i < genresFilter.getSize(); i++)
+        {
+            if(genresFilter[i] != genre) {
+                genresFilter.removeAt(i);
+                i--;
+            }
+        }
     }
+    

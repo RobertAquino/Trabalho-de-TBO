@@ -32,6 +32,7 @@ public:
 
     Filme();
     ~Filme();
+    void transformaString();
 
     std::string getTitleType()
     {
