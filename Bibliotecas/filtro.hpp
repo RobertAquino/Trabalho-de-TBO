@@ -1,8 +1,8 @@
 #pragma once
 
-#include "cinema.hpp"
-#include "arrayList.hpp"
-#include "filme.hpp"
+#include "Cinema.hpp"
+#include "ArrayList.hpp"
+#include "Filme.hpp"
 
 class filtro
 {

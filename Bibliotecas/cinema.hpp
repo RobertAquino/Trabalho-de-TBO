@@ -1,8 +1,8 @@
 #pragma once
 
-#include "filme.hpp"
-#include "arrayList.hpp"
-#include "localizacao.hpp"
+#include "Filme.hpp"
+#include "ArrayList.hpp"
+#include "Localizacao.hpp"
 #include <iostream>
 
 class Cinema
