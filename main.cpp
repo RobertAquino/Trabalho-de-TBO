@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Bibliotecas/arrayList.hpp"
+#include "Bibliotecas/ArrayList.hpp"
 
 int main()
 {
