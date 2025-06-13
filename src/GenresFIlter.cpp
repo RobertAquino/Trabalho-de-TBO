@@ -23,16 +23,7 @@ void getGenresFilter(const ArrayList<Filme> &filmes, ArrayList<genresFilter> &ge
     }
      for(int i = 0; i < genresFilter.getSize(); i++)
     {
-        if(primeiro){
-            if(genresFilter[i].isHere){
-                lista[i] = j[i];
-            }
-        }
-        else
-        {
-            if(genresFilter[i].isHere == false){
-                lista.removeAt(i);
-            }
-        }  
+        if (genresFilter.isHere)
+            lista[i] =
     }
 }
