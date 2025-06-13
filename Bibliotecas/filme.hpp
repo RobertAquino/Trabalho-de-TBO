@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cinema.hpp"
+#include "Cinema.hpp"
 #include <iostream>
 
 enum class Genres
