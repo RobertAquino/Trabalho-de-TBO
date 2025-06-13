@@ -1,0 +1,14 @@
+{
+  "files.associations": {
+    "iostream": "cpp",
+    "vector": "cpp",
+    "array": "cpp",
+    "string": "cpp",
+    "string_view": "cpp"
+  },
+  "[cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format",
+    "editor.formatOnSave": true
+  },
+  "clang-format.style": "{ BasedOnStyle: Google, DerivePointerAlignment: false, BreakBeforeBraces: Attach }"
+}
