@@ -21,3 +21,5 @@ void getGenresFilter(const ArrayList<Filme> &filmes, ArrayList<int> &genresFilte
             lista[i] =
     }
 }
+//Testando o pc de Samuelsds
+ddsf
