@@ -1,5 +1,8 @@
 #pragma once
 
+#include "filme.hpp"
+#include "arrayList.hpp"
+#include "localizacao.hpp"
 #include <iostream>
 
 class Cinema
@@ -8,9 +11,9 @@ class Cinema
 
     long cinemaId;
     std::string nomeCinema;
-    //Localizacao localizacao;
+    Localizacao localizacao;
     double precoIngresso;
-    //Array<Filmes> filmesEmExibicao;
+    ArrayList<Filme> filmesEmExibicao;
 
     Cinema();
     ~Cinema();

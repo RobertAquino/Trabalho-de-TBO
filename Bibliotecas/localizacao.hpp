@@ -1,7 +1,7 @@
 #pragma once
 
 class Localizacao{
-    private:
+    public:
 
     double x;
     double y;
