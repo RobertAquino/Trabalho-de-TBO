@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "Filme.hpp"
 #include "ArrayList.hpp"
 
@@ -14,5 +15,11 @@ enum class titleType
 class TitleTypeFilter
 {
     public:
+
+    bool isHere;
+
+    void getTitleTypeFilter(ArrayList<Filme> filmes, ArrayList<TitleTypeFilter> &titlefilter,Genres titleType,
+         ArrayList<int> &lista, bool primeiro);
+
 
 };

@@ -7,20 +7,8 @@ class genresFilter
 {
     public:
 
-    ArrayList<Filme> genresFilter;
+    bool isHere;
 
-    void getGenresFilter(const ArrayList<Filme> &filmes, ArrayList<int> &genresFilter, Genres genre);
+    void getGenresFilter(const ArrayList<Filme> &filmes, ArrayList<int> &genresFilter, Genres genre, bool primeiro);
 
 };  
-
-    void getGenresFilter(const ArrayList<Filme> &filmes, ArrayList<int> &genresFilter, Genres genre)
-    {
-        for(int i = 0; i < genresFilter.getSize(); i++)
-        {
-            if(genresFilter[i] != genre) {
-                genresFilter.removeAt(i);
-                i--;
-            }
-        }
-    }
-    
