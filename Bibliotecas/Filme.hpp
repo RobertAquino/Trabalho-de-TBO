@@ -3,6 +3,7 @@
 #include "ArrayList.hpp"
 #include "Cinema.hpp"
 #include <iostream>
+#include <sstream>
 
 enum class Genres
 {
@@ -39,7 +40,7 @@ class Filme
 {
 public:
     Cinema cinema;
-    long tConst;
+    std::string tConst;
     std::string titleType;
     std::string primaryTitle;
     std::string originalTitle;
@@ -49,7 +50,35 @@ public:
     int runTimesMinutes;
     ArrayList<std::string> genres;
 
-    Filme();
+    Filme(const std::string &tconst_str, const std::string &type_str, const std::string &pTitle_str,
+          const std::string &oTitle_str, const std::string &isAdult_str, const std::string &startYear_str,
+          const std::string &endYear_str, const std::string &runtime_str, const std::string &genres_str)
+    {
+        tConst = tconst_str;
+        titleType = type_str;
+        primaryTitle = pTitle_str;
+        originalTitle = oTitle_str;
+        std::stringstream ss_genres(genres_str);
+        std::string genero_individual;
+
+        /* O laço lê a stringstream até não haver mais o que ler,
+         usando a vírgula ',' como o caractere delimitador*/
+        while (std::getline(ss_genres, genero_individual, ','))
+        {
+            /// Adiciona cada gênero encontrado na ArrayList
+            genres.add(genero_individual);
+        }
+
+        // ---- Lógica para tratar o '\N' e converter para número ----
+        // Se a string for "\\N", 0 sera o valor padrão, caso ao contraio o valor sera lido.
+        // "\\N" em vez de "\N" no código pois a primeira '\' é um caractere de escape.
+
+        isAdult = (isAdult_str == "\\N") ? 0 : std::stoi(isAdult_str);
+        startYear = (startYear_str == "\\N") ? 0 : std::stoi(startYear_str);
+        endYear = (endYear_str == "\\N") ? 0 : std::stoi(endYear_str);
+        runTimesMinutes = (runtime_str == "\\N") ? 0 : std::stoi(runtime_str);
+    }
+
     ~Filme();
     void transformaString();
 
@@ -62,11 +91,11 @@ public:
         this->cinema = cinema;
     }
 
-    long getTConst()
+    std::string getTConst()
     {
         return tConst;
     }
-    void setTConst(long tConst)
+    void setTConst(std::string tConst)
     {
         this->tConst = tConst;
     }
