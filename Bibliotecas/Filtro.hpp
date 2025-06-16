@@ -6,10 +6,7 @@
 
 class filtro
 {
-    public:
-
+public:
     ArrayList<Filme> filmes;
     ArrayList<Cinema> cinemas;
-
-    
 };
