@@ -14,12 +14,9 @@ enum class titleType
 };
 class TitleTypeFilter
 {
-    public:
-
+public:
     bool isHere;
 
-    void getTitleTypeFilter(ArrayList<Filme> filmes, ArrayList<TitleTypeFilter> &titlefilter,Genres titleType,
-         ArrayList<int> &lista, bool primeiro);
-
-
+    void getTitleTypeFilter(ArrayList<Filme> filmes, ArrayList<TitleTypeFilter> &titlefilter, Genres titleType,
+                            ArrayList<int> &lista, bool primeiroFiltro);
 };

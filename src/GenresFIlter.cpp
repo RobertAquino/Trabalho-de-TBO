@@ -3,7 +3,8 @@
 #include <vector>
 #include <iostream>
 #include "../Bibliotecas/GenresFilter.hpp"
-
+/*
+//alterar a minha função para lidar com filmes de mais de um genero, pode ter "^" ou um "v"
 void getGenresFilter(const ArrayList<Filme> &filmes, ArrayList<genresFilter> &genresFilter, Genres genres,
      ArrayList<int> &lista, bool primeiro)
 {
@@ -21,7 +22,7 @@ void getGenresFilter(const ArrayList<Filme> &filmes, ArrayList<genresFilter> &ge
             j.push_back(i);
         }
     }
-     for(int i = 0; i < genresFilter.getSize(); i++)
+    for(int i = 0; i < genresFilter.getSize(); i++)
     {
         if(primeiro){
             if(genresFilter[i].isHere){
@@ -33,6 +34,7 @@ void getGenresFilter(const ArrayList<Filme> &filmes, ArrayList<genresFilter> &ge
             if(genresFilter[i].isHere == false){
                 lista.removeAt(i);
             }
-        }  
+        }
     }
 }
+*/

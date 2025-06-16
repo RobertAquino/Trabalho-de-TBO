@@ -5,10 +5,8 @@
 
 class genresFilter
 {
-    public:
-
+public:
     bool isHere;
-
-    void getGenresFilter(const ArrayList<Filme> &filmes, ArrayList<int> &genresFilter, Genres genre, bool primeiro);
-
-};  
+    void getGenresFilter(const ArrayList<Filme> &filmes, ArrayList<genresFilter> &genresFilter, Genres genres,
+                         ArrayList<int> &listaFinal, bool primeiro);
+};

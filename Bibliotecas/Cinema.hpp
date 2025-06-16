@@ -5,9 +5,9 @@
 #include "Localizacao.hpp"
 #include <iostream>
 
-class Cinema {
+class Cinema
+{
 public:
-
     long cinemaId;
     std::string nomeCinema;
     Localizacao localizacao;
