@@ -4,7 +4,7 @@
 #include "ArrayList.hpp"
 #include "Filme.hpp"
 
-class filtro
+class Filtro
 {
 public:
     ArrayList<Filme> filmes;
