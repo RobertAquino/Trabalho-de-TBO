@@ -7,6 +7,6 @@
 class Filtro
 {
 public:
-    ArrayList<Filme> filmes;
-    ArrayList<Cinema> cinemas;
+    virtual ArrayList<Filme> aplicar(const ArrayList<Filme> &filmes) const = 0;
+    virtual ~Filtro() {}
 };
