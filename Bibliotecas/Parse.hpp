@@ -38,7 +38,7 @@ public:
             newToken.push_back(aux);
             index += 2;
         }
-        return newToken
+        return newToken;
     }
 };
 
