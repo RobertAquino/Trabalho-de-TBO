@@ -9,15 +9,14 @@ class Node
 
 public:
     int duration;
-    int maxFim;
+    int maxDuration;
     int index;
     Node *right;
     Node *left;
 
 public:
-    Node(int duration, int indice) : duration(duration), maxFim(end),
+    Node(int duration, int indice) : duration(duration), maxDuration(duration),
                                      index(index), right(nullptr), left(nullptr) {}
-
     ~Node()
     {
         delete left;
@@ -30,16 +29,13 @@ class IntervalTreeDuration
 public:
     Node *root;
 
-    IntervalTreeDuration() : root(nullptr)
-    {
-    }
+    IntervalTreeDuration() : root(nullptr) {}
     ~IntervalTreeDuration()
     {
         delete root;
     }
 
 private:
-    void insertNode();
-
-    void insertRec();
+    bool insertNode(Node *root, ArrayList<Filme> filmes, int *index);
+    Node *insertRec(Node *node, ArrayList<Filme> filmes, int *index);
 };

@@ -4,25 +4,50 @@
 #include "../Bibliotecas/Filme.hpp"
 #include "../Bibliotecas/ExpressionTree.hpp"
 #include "../Bibliotecas/IntervalTreeDuration.hpp"
+#include <climits>
 
-bool insertNode(Node *root, ArrayList<Filme> filmes, int *index)
+bool insertNode(Node **root, ArrayList<Filme> filmes, int *index)
 {
-    if (filmes[index].runTimeMinutes < 0 || filmes[index].runTimeMinutes == nullptr)
-        index++;
-    return false;
+    // Compara se a duração é valida. Alguns filmes tem duração nula
+    if (filmes[(*index)].runTimesMinutes < 0)
+    {
+        (*index)++;
+        return false;
+    }
 
-    insertRec(root, filmes, index);
+    *root = insertRec(*root, filmes, index);
+    return true;
 }
-void insertRec(Node *node, ArrayList<Filme> filmes, int *index)
+Node *insertRec(Node *node, ArrayList<Filme> filmes, int *index)
 {
+    // Insere o novo nodo
     if (node == nullptr)
     {
-        Node *newNode = new Node(filmes[index].runTimeMinutes, index++);
+        int duration = filmes[(*index)].runTimesMinutes;
+        Node *newNode = new Node(duration, *index);
+        (*index)++;
+        return newNode;
     }
-    if (filmes[index].runTimeMinutes > node->duration)
-        return insertRec(node->right, filmes, index);
+    // Procura o nodo nulo
+    if (filmes[(*index)].runTimesMinutes < node->duration)
+    {
+        node->left = insertRec(node->left, filmes, index);
+    }
+    else if (filmes[(*index)].runTimesMinutes > node->duration)
+    {
+        node->right = insertRec(node->right, filmes, index);
+    }
+    // Não adiciona a duração se esta já estiver presente na árvore
+    else
+    {
+        (*index)++;
+        return node;
+    }
+    // atualiza a maior duração da subárvore. Útil para função de filtragem
+    int maxLeft = (node->left ? node->left->maxDuration : INT_MIN);
+    int maxRight = (node->right ? node->right->maxDuration : INT_MIN);
+    int maxCurrent = (node->duration > maxLeft) ? node->duration : maxLeft;
+    node->maxDuration = (maxCurrent > maxRight) ? maxCurrent : maxRight;
 
-    return insertRec(node->left, filmes, index);
-
-    if ()
+    return node;
 }
