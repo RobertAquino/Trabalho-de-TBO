@@ -76,7 +76,7 @@ void balancing(Node **node)
     else if (bl < -1 && balancingFactor((*node)->right) > 0)
         *node = turnRightLeft(node);
 }
-bool insertNode(Node **root, ArrayList<Filme> filmes, int *index)
+bool insertNode(Node **root, ArrayList<Filme> &filmes, int *index)
 {
     // Compara se a duração é valida. Alguns filmes tem duração nula
     if (filmes[(*index)].runTimesMinutes < 0)
@@ -88,7 +88,7 @@ bool insertNode(Node **root, ArrayList<Filme> filmes, int *index)
     *root = insertRec(*root, filmes, index);
     return true;
 }
-Node *insertRec(Node *node, ArrayList<Filme> filmes, int *index)
+Node *insertRec(Node *node, ArrayList<Filme> &filmes, int *index)
 {
     // Insere o novo nodo
     if (node == nullptr)

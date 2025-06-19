@@ -74,6 +74,15 @@ struct HashFunc<char>
     }
 };
 
+template <>
+struct HashFunc<bool>
+{
+    int operator()(const bool &chave) const
+    {
+        return static_cast<int>(chave);
+    }
+};
+
 template <typename K, typename V>
 class HashMap
 {
@@ -82,7 +91,7 @@ private:
     int capacity;
     int size;
 
-    const int primes[] = {101, 211, 431, 863, 1741, 3469, 6949, 14033};
+    const int primes[] = {7, 23, 53, 73, 101, 211, 431, 863, 1741, 3469, 6949, 14033};
     int primeIndex = 0;
 
     int hash(const K &key) const

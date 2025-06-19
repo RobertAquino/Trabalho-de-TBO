@@ -1,6 +1,7 @@
 #pragma ocen
 
 #include "Filtro.hpp"
+#include "HashMap.hpp"
 
 class FiltroGenero : public Filtro
 {
