@@ -36,12 +36,27 @@ enum class Genres
     Adult = 26
 };
 
+enum class TitleType
+{
+    movie = 0,
+    shortFilm = 1,
+    tvSeries = 2,
+    tvEpisode = 3,
+    tvMiniSeries = 4,
+    video = 5,
+    videoGame = 6,
+    tvMovie = 7,
+    tvSpecial = 8,
+    tvShort = 9
+};
+
 class Filme
 {
 public:
     Cinema cinema;
     std::string tConst;
-    std::string titleType;
+    std::string titleType;    // Mudar para enum TitleType
+    std::string primaryGenre; // Mudar para enum Genres
     std::string primaryTitle;
     std::string originalTitle;
     bool isAdult;
