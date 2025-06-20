@@ -154,7 +154,7 @@ public:
         }
     }
 
-    std::optional<V> get(const K &key)
+    std::optional<V> get(const K &key) const
     {
         int index = hash(key);
         HashNode<K, V> *node = table[index];
@@ -195,7 +195,7 @@ public:
         }
         throw std::out_of_range("Key not found in HashMap.");
     }
-    bool containsKey(const K &key)
+    bool containsKey(const K &key) const
     {
         int index = hash(key);
         HashNode<K, V> *node = table[index];

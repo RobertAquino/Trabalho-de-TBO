@@ -46,7 +46,8 @@
     "typeinfo": "cpp",
     "fstream": "cpp",
     "sstream": "cpp",
-    "climits": "cpp"
+    "climits": "cpp",
+    "xstring": "cpp"
   },
   "[cpp]": {
     "editor.defaultFormatter": "ms-vscode.cpptools",
