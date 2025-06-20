@@ -19,9 +19,7 @@ ArrayList<Filme> leitorFilmes(std::string nomeDoArquivo)
     // Primeiro, usa o getline para ler o arquivo e pegar a linha inteira, que fica armazenada em uma única string, assim: "tt7917518\tshort\tThe Battle II\t...etc"
     while (std::getline(arquivo, linha))
     {
-        /* Depois, coloca essa string em um stringstream.isso nos permite usar getline uma segunda vez, mas agora para extrair cada campo individualmente,
-        usando o caractere de tabulação (\t) como separador,a cada chamada, um campo é lido e guardado em uma variável
-        ao final, quando todos os campos foram separados, o objeto Filme é criado com essas informações */
+        // stringstream permite "quebrar" a string
         std::stringstream ss(linha);
         std::string tconst, type, pTitle, oTitle, isAdult, startYear, endYear, runtime, genres;
 
@@ -41,5 +39,36 @@ ArrayList<Filme> leitorFilmes(std::string nomeDoArquivo)
         catalogo.add(filmeAtual);
     }
     arquivo.close();
-    return catalogo; // Retorna o catálogo preenchido
+    return catalogo;
+}
+
+ArrayList<Cinema> leitorCinema(std::string nomeDoArquivo, HashMap<std::string, Filme> &hashFilme)
+{
+    std::ifstream arquivo(nomeDoArquivo);
+    ArrayList<Cinema> cinemas;
+    if (!arquivo)
+    {
+        std::cout << "Não foi posivel abrir o arquivo" << std::endl;
+        return cinemas;
+    }
+
+    std::string linha;
+    std::getline(arquivo, linha);
+    while (std::getline(arquivo, linha))
+    {
+        std::stringstream ss(linha);
+        std::string cinemaid, nomeCinema, x, y, precoIngresso, filmes;
+
+        std::getline(ss, cinemaid, ',');
+        std::getline(ss, nomeCinema, ',');
+        std::getline(ss, x, ',');
+        std::getline(ss, y, ',');
+        std::getline(ss, precoIngresso, ',');
+        std::getline(ss, filmes); // Lê o resto da linha
+
+        Cinema cinemaAtual(cinemaid, nomeCinema, x, y, precoIngresso, filmes, hashFilme);
+        cinemas.add(cinemaAtual);
+    }
+    arquivo.close();
+    return cinemas;
 }
