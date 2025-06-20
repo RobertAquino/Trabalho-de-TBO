@@ -20,6 +20,5 @@ HashSet<int> FiltroGenero::aplicar()
             }
         }
     }
-
     return result;
 }

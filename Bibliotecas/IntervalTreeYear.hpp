@@ -2,20 +2,19 @@
 
 #include "ArrayList.hpp"
 #include "Filme.hpp"
-
 class NodeYear
 {
 
 public:
     int year;
-    int maxDuration;
+    int maxYear;
     ArrayList<int> indexList;
     NodeYear *right;
     NodeYear *left;
     int height;
 
 public:
-    NodeYear(int duration) : year(year), maxDuration(duration),
+    NodeYear(int duration) : year(year), maxYear(year),
                              right(nullptr), left(nullptr), height(0) {}
     ~NodeYear()
     {

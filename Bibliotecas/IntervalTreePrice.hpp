@@ -1,0 +1,48 @@
+#pragma once
+
+#include "ArrayList.hpp"
+#include "Cinema.hpp"
+class NodePrice
+{
+
+public:
+    float price;
+    float maxPrice;
+    ArrayList<int> indexList;
+    NodePrice *right;
+    NodePrice *left;
+    int height;
+
+public:
+    NodePrice(float price) : price(price), maxPrice(price),
+                             right(nullptr), left(nullptr), height(0) {}
+    ~NodePrice()
+    {
+        delete left;
+        delete right;
+    }
+};
+
+class IntervalTreeDuration
+{
+public:
+    NodePrice *root;
+
+    IntervalTreeDuration() : root(nullptr) {}
+    ~IntervalTreeDuration()
+    {
+        delete root;
+    }
+
+private:
+    int greaterValue(int a, int b);
+    int nodeHeight(NodePrice *node);
+    int balancingFactor(NodePrice *node);
+    NodePrice *turnLeft(NodePrice **node);
+    NodePrice *turnRight(NodePrice **node);
+    NodePrice *turnLeftRight(NodePrice **node);
+    NodePrice *turnRightLeft(NodePrice **node);
+    void balancing(NodePrice **node);
+    bool insertNode(NodePrice *root, ArrayList<Cinema> filmes, int &index);
+    NodePrice *insertRec(NodePrice *node, ArrayList<Cinema> filmes, int &index);
+};

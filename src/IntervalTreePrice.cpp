@@ -1,19 +1,19 @@
 #pragma once
 
 #include "../Bibliotecas/ArrayList.hpp"
-#include "../Bibliotecas/Filme.hpp"
-#include "../Bibliotecas/IntervalTreeYear.hpp"
+#include "../Bibliotecas/Cinema.hpp"
+#include "../Bibliotecas/IntervalTreePrice.hpp"
 #include <climits>
 
 int greaterValue(int a, int b)
 {
     return (a > b) ? a : b;
 }
-int nodeHeight(NodeYear *node)
+int nodeHeight(NodePrice *node)
 {
     return node ? node->height : 0;
 }
-int balancingFactor(NodeYear *node)
+int balancingFactor(NodePrice *node)
 {
     if (!node)
         return 0;
@@ -21,11 +21,11 @@ int balancingFactor(NodeYear *node)
     int rightHeight = node->right ? node->right->height : 0;
     return leftHeight - rightHeight;
 }
-NodeYear *turnLeft(NodeYear **node)
+NodePrice *turnLeft(NodePrice **node)
 {
-    NodeYear *head = (*node);
-    NodeYear *leftNode = head->left;
-    NodeYear *rightSon = leftNode->right;
+    NodePrice *head = (*node);
+    NodePrice *leftNode = head->left;
+    NodePrice *rightSon = leftNode->right;
 
     leftNode->right = head;
     head->left = rightSon;
@@ -36,11 +36,11 @@ NodeYear *turnLeft(NodeYear **node)
     (*node) = leftNode;
     return (*node);
 }
-NodeYear *turnRight(NodeYear **node)
+NodePrice *turnRight(NodePrice **node)
 {
-    NodeYear *head = (*node);
-    NodeYear *rightNode = head->right;
-    NodeYear *leftSon = rightNode->left;
+    NodePrice *head = (*node);
+    NodePrice *rightNode = head->right;
+    NodePrice *leftSon = rightNode->left;
 
     head->right = leftSon;
     rightNode->left = head;
@@ -51,17 +51,17 @@ NodeYear *turnRight(NodeYear **node)
     (*node) = rightNode;
     return (*node);
 }
-NodeYear *turnLeftRight(NodeYear **node)
+NodePrice *turnLeftRight(NodePrice **node)
 {
     (*node)->left = turnLeft(&(*node)->right);
     return turnRight(node);
 }
-NodeYear *turnRightLeft(NodeYear **node)
+NodePrice *turnRightLeft(NodePrice **node)
 {
     (*node)->right = turnRight(&(*node)->right);
     return turnLeft(node);
 }
-void balancing(NodeYear **node)
+void balancing(NodePrice **node)
 {
     int bl = balancingFactor(*node);
 
@@ -75,38 +75,38 @@ void balancing(NodeYear **node)
     else if (bl < -1 && balancingFactor((*node)->right) > 0)
         *node = turnRightLeft(node);
 }
-bool insertNode(NodeYear **root, ArrayList<Filme> &filmes, int &index)
+bool insertNode(NodePrice **root, ArrayList<Cinema> &cinemas, int &index)
 {
     // Compara se a duração é valida. Alguns filmes tem duração nula
-    if (index >= filmes.getSize() || filmes[index].startYear < 0)
+    if (index >= cinemas.getSize() || cinemas[index].precoIngresso < 0)
     {
         index++;
         return false;
     }
 
-    *root = insertRec(*root, filmes, index);
+    *root = insertRec(*root, cinemas, index);
     return true;
 }
-NodeYear *insertRec(NodeYear *node, ArrayList<Filme> &filmes, int &index)
+NodePrice *insertRec(NodePrice *node, ArrayList<Cinema> &cinemas, int &index)
 {
     // Insere o novo nodo
     if (node == nullptr)
     {
-        int starYear = filmes[index].startYear;
-        NodeYear *newNode = new NodeYear(starYear);
+        int price = cinemas[index].precoIngresso;
+        NodePrice *newNode = new NodePrice(price);
         newNode->height = 1;
         newNode->indexList.add(index);
         index++;
         return newNode;
     }
     // Procura o nodo nulo
-    if (filmes[index].startYear < node->year)
+    if (cinemas[index].precoIngresso < node->price)
     {
-        node->left = insertRec(node->left, filmes, index);
+        node->left = insertRec(node->left, cinemas, index);
     }
-    else if (filmes[index].startYear > node->year)
+    else if (cinemas[index].precoIngresso > node->price)
     {
-        node->right = insertRec(node->right, filmes, index);
+        node->right = insertRec(node->right, cinemas, index);
     }
 
     // Não cria uma nova lista se a duração já existir, apenas atualiza indexList
@@ -123,10 +123,10 @@ NodeYear *insertRec(NodeYear *node, ArrayList<Filme> &filmes, int &index)
     balancing(&node);
 
     // atualiza a maior duração da subárvore. Útil para função de filtragem
-    int maxLeft = (node->left ? node->left->maxYear : INT_MIN);
-    int maxRight = (node->right ? node->right->maxYear : INT_MIN);
-    int maxCurrent = (node->year > maxLeft) ? node->year : maxLeft;
-    node->year = (maxCurrent > maxRight) ? maxCurrent : maxRight;
+    int maxLeft = (node->left ? node->left->maxPrice : INT_MIN);
+    int maxRight = (node->right ? node->right->maxPrice : INT_MIN);
+    int maxCurrent = (node->price > maxLeft) ? node->price : maxLeft;
+    node->maxPrice = (maxCurrent > maxRight) ? maxCurrent : maxRight;
 
     return node;
 }
