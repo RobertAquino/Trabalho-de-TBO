@@ -2,18 +2,18 @@
 
 #include "../Bibliotecas/ArrayList.hpp"
 #include "../Bibliotecas/Filme.hpp"
-#include "../Bibliotecas/IntervalTreeDuration.hpp"
+#include "../Bibliotecas/IntervalTreeYear.hpp"
 #include <climits>
 
 int greaterValue(int a, int b)
 {
     return (a > b) ? a : b;
 }
-int nodeHeight(NodeDuration *node)
+int nodeHeight(NodeYear *node)
 {
     return node ? node->height : 0;
 }
-int balancingFactor(NodeDuration *node)
+int balancingFactor(NodeYear *node)
 {
     if (!node)
         return 0;
@@ -21,11 +21,11 @@ int balancingFactor(NodeDuration *node)
     int rightHeight = node->right ? node->right->height : 0;
     return leftHeight - rightHeight;
 }
-NodeDuration *turnLeft(NodeDuration **node)
+NodeYear *turnLeft(NodeYear **node)
 {
-    NodeDuration *head = (*node);
-    NodeDuration *leftNode = head->left;
-    NodeDuration *rightSon = leftNode->right;
+    NodeYear *head = (*node);
+    NodeYear *leftNode = head->left;
+    NodeYear *rightSon = leftNode->right;
 
     leftNode->right = head;
     head->left = rightSon;
@@ -36,11 +36,11 @@ NodeDuration *turnLeft(NodeDuration **node)
     (*node) = leftNode;
     return (*node);
 }
-NodeDuration *turnRight(NodeDuration **node)
+NodeYear *turnRight(NodeYear **node)
 {
-    NodeDuration *head = (*node);
-    NodeDuration *rightNode = head->right;
-    NodeDuration *leftSon = rightNode->left;
+    NodeYear *head = (*node);
+    NodeYear *rightNode = head->right;
+    NodeYear *leftSon = rightNode->left;
 
     head->right = leftSon;
     rightNode->left = head;
@@ -51,17 +51,17 @@ NodeDuration *turnRight(NodeDuration **node)
     (*node) = rightNode;
     return (*node);
 }
-NodeDuration *turnLeftRight(NodeDuration **node)
+NodeYear *turnLeftRight(NodeYear **node)
 {
     (*node)->left = turnLeft(&(*node)->right);
     return turnRight(node);
 }
-NodeDuration *turnRightLeft(NodeDuration **node)
+NodeYear *turnRightLeft(NodeYear **node)
 {
     (*node)->right = turnRight(&(*node)->right);
     return turnLeft(node);
 }
-void balancing(NodeDuration **node)
+void balancing(NodeYear **node)
 {
     int bl = balancingFactor(*node);
 
@@ -75,10 +75,10 @@ void balancing(NodeDuration **node)
     else if (bl < -1 && balancingFactor((*node)->right) > 0)
         *node = turnRightLeft(node);
 }
-bool insertNode(NodeDuration **root, ArrayList<Filme> &filmes, int &index)
+bool insertNode(NodeYear **root, ArrayList<Filme> &filmes, int &index)
 {
     // Compara se a duração é valida. Alguns filmes tem duração nula
-    if (index >= filmes.getSize() || filmes[index].runTimesMinutes < 0)
+    if (index >= filmes.getSize() || filmes[index].endYear < 0)
     {
         index++;
         return false;
@@ -87,13 +87,13 @@ bool insertNode(NodeDuration **root, ArrayList<Filme> &filmes, int &index)
     *root = insertRec(*root, filmes, index);
     return true;
 }
-NodeDuration *insertRec(NodeDuration *node, ArrayList<Filme> &filmes, int &index)
+NodeYear *insertRec(NodeYear *node, ArrayList<Filme> &filmes, int &index)
 {
     // Insere o novo nodo
     if (node == nullptr)
     {
         int duration = filmes[index].runTimesMinutes;
-        NodeDuration *newNode = new NodeDuration(duration);
+        NodeYear *newNode = new NodeYear(duration);
         newNode->height = 1;
         newNode->indexList.add(index);
         index++;

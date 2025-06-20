@@ -3,22 +3,22 @@
 #include "ArrayList.hpp"
 #include "Filme.hpp"
 #include "ExpressionTree.hpp"
-
-class Node
+#include <vector>
+class NodeDuration
 {
 
 public:
     int duration;
     int maxDuration;
-    int index;
-    Node *right;
-    Node *left;
+    ArrayList<int> indexList;
+    NodeDuration *right;
+    NodeDuration *left;
     int height;
 
 public:
-    Node(int duration, int indice) : duration(duration), maxDuration(duration),
-                                     index(index), right(nullptr), left(nullptr), height(0) {}
-    ~Node()
+    NodeDuration(int duration) : duration(duration), maxDuration(duration),
+                                 right(nullptr), left(nullptr), height(0) {}
+    ~NodeDuration()
     {
         delete left;
         delete right;
@@ -28,7 +28,7 @@ public:
 class IntervalTreeDuration
 {
 public:
-    Node *root;
+    NodeDuration *root;
 
     IntervalTreeDuration() : root(nullptr) {}
     ~IntervalTreeDuration()
@@ -38,13 +38,13 @@ public:
 
 private:
     int greaterValue(int a, int b);
-    int nodeHeight(Node *node);
-    int balancingFactor(Node *node);
-    Node *turnLeft(Node **node);
-    Node *turnRight(Node **node);
-    Node *turnLeftRight(Node **node);
-    Node *turnRightLeft(Node **node);
-    void balancing(Node **node);
-    bool insertNode(Node *root, ArrayList<Filme> filmes, int *index);
-    Node *insertRec(Node *node, ArrayList<Filme> filmes, int *index);
+    int nodeHeight(NodeDuration *node);
+    int balancingFactor(NodeDuration *node);
+    NodeDuration *turnLeft(NodeDuration **node);
+    NodeDuration *turnRight(NodeDuration **node);
+    NodeDuration *turnLeftRight(NodeDuration **node);
+    NodeDuration *turnRightLeft(NodeDuration **node);
+    void balancing(NodeDuration **node);
+    bool insertNode(NodeDuration *root, ArrayList<Filme> filmes, int &index);
+    NodeDuration *insertRec(NodeDuration *node, ArrayList<Filme> filmes, int &index);
 };
