@@ -36,7 +36,7 @@ class Parser
     size_t pos;
 
 public:
-    Parser(const std::vector<Token> &tokens) : tokens(tokens), pos(0) {}
+    Parser(std::vector<Token> &tokens) : tokens(tokens), pos(0) {}
 
     Node *parse()
     {

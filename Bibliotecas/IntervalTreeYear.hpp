@@ -2,13 +2,14 @@
 
 #include "ArrayList.hpp"
 #include "Filme.hpp"
+#include <vector>
 class NodeYear
 {
 
 public:
     int year;
     int maxYear;
-    ArrayList<int> indexList;
+    std::vector<int> indexList;
     NodeYear *right;
     NodeYear *left;
     int height;
@@ -43,6 +44,6 @@ private:
     NodeYear *turnLeftRight(NodeYear **node);
     NodeYear *turnRightLeft(NodeYear **node);
     void balancing(NodeYear **node);
-    bool insertNode(NodeYear *root, ArrayList<Filme> filmes, int &index);
-    NodeYear *insertRec(NodeYear *node, ArrayList<Filme> filmes, int &index);
+    bool insertNode(NodeYear *root, std::vector<Filme> filmes, int &index);
+    NodeYear *insertRec(NodeYear *node, std::vector<Filme> filmes, int &index);
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Bibliotecas/ArrayList.hpp"
+#include <vector>
 #include "../Bibliotecas/Cinema.hpp"
 #include "../Bibliotecas/IntervalTreePrice.hpp"
 #include <climits>
@@ -75,10 +75,10 @@ void balancing(NodePrice **node)
     else if (bl < -1 && balancingFactor((*node)->right) > 0)
         *node = turnRightLeft(node);
 }
-bool insertNode(NodePrice **root, ArrayList<Cinema> &cinemas, int &index)
+bool insertNode(NodePrice **root, std::vector<Cinema> &cinemas, int &index)
 {
     // Compara se a duração é valida. Alguns filmes tem duração nula
-    if (index >= cinemas.getSize() || cinemas[index].precoIngresso < 0)
+    if (index >= cinemas.size() || cinemas[index].precoIngresso < 0)
     {
         index++;
         return false;
@@ -87,7 +87,7 @@ bool insertNode(NodePrice **root, ArrayList<Cinema> &cinemas, int &index)
     *root = insertRec(*root, cinemas, index);
     return true;
 }
-NodePrice *insertRec(NodePrice *node, ArrayList<Cinema> &cinemas, int &index)
+NodePrice *insertRec(NodePrice *node, std::vector<Cinema> &cinemas, int &index)
 {
     // Insere o novo nodo
     if (node == nullptr)
@@ -95,7 +95,7 @@ NodePrice *insertRec(NodePrice *node, ArrayList<Cinema> &cinemas, int &index)
         int price = cinemas[index].precoIngresso;
         NodePrice *newNode = new NodePrice(price);
         newNode->height = 1;
-        newNode->indexList.add(index);
+        newNode->indexList.push_back(index);
         index++;
         return newNode;
     }
@@ -112,7 +112,7 @@ NodePrice *insertRec(NodePrice *node, ArrayList<Cinema> &cinemas, int &index)
     // Não cria uma nova lista se a duração já existir, apenas atualiza indexList
     else
     {
-        node->indexList.add(index);
+        node->indexList.push_back(index);
         index++;
         return node;
     }

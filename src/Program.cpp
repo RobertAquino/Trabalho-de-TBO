@@ -22,5 +22,5 @@ void Program::run()
     // Loop principal
     while (programRunning)
     {
-    }
+        }
 }

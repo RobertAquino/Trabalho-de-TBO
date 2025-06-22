@@ -1,15 +1,16 @@
 #pragma ocen
 
 #include "Filtro.hpp"
+#include <vector>
 
 class FiltroGenero : public Filtro
 {
 private:
     Genres genre;
-    HashMap<Genres, ArrayList<int>> &baseFilmes;
+    HashMap<Genres, std::vector<int>> &baseFilmes;
 
 public:
-    FiltroGenero(Genres genre, HashMap<Genres, ArrayList<int>> &baseFilmes);
+    FiltroGenero(Genres genre, HashMap<Genres, std::vector<int>> &baseFilmes);
 
     HashSet<int> aplicar() override;
 };

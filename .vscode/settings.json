@@ -47,7 +47,16 @@
     "fstream": "cpp",
     "sstream": "cpp",
     "climits": "cpp",
-    "xstring": "cpp"
+    "xstring": "cpp",
+    "charconv": "cpp",
+    "chrono": "cpp",
+    "cstring": "cpp",
+    "ctime": "cpp",
+    "ratio": "cpp",
+    "format": "cpp",
+    "iomanip": "cpp",
+    "span": "cpp",
+    "variant": "cpp"
   },
   "[cpp]": {
     "editor.defaultFormatter": "ms-vscode.cpptools",

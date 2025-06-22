@@ -2,7 +2,7 @@
 
 #include "ArrayList.hpp"
 #include "Filme.hpp"
-#include "ExpressionTree.hpp"
+
 #include <vector>
 class NodeDuration
 {
@@ -10,7 +10,7 @@ class NodeDuration
 public:
     int duration;
     int maxDuration;
-    ArrayList<int> indexList;
+    std::vector<int> indexList;
     NodeDuration *right;
     NodeDuration *left;
     int height;
@@ -45,6 +45,6 @@ private:
     NodeDuration *turnLeftRight(NodeDuration **node);
     NodeDuration *turnRightLeft(NodeDuration **node);
     void balancing(NodeDuration **node);
-    bool insertNode(NodeDuration *root, ArrayList<Filme> filmes, int &index);
-    NodeDuration *insertRec(NodeDuration *node, ArrayList<Filme> filmes, int &index);
+    bool insertNode(NodeDuration *root, std::vector<Filme> &filmes, int &index);
+    NodeDuration *insertRec(NodeDuration *node, std::vector<Filme> &filmes, int &index);
 };

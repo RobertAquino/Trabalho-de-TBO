@@ -75,10 +75,10 @@ void balancing(NodeYear **node)
     else if (bl < -1 && balancingFactor((*node)->right) > 0)
         *node = turnRightLeft(node);
 }
-bool insertNode(NodeYear **root, ArrayList<Filme> &filmes, int &index)
+bool insertNode(NodeYear **root, std::vector<Filme> &filmes, int &index)
 {
     // Compara se a duração é valida. Alguns filmes tem duração nula
-    if (index >= filmes.getSize() || filmes[index].startYear < 0)
+    if (index >= filmes.size() || filmes[index].startYear < 0)
     {
         index++;
         return false;
@@ -87,7 +87,7 @@ bool insertNode(NodeYear **root, ArrayList<Filme> &filmes, int &index)
     *root = insertRec(*root, filmes, index);
     return true;
 }
-NodeYear *insertRec(NodeYear *node, ArrayList<Filme> &filmes, int &index)
+NodeYear *insertRec(NodeYear *node, std::vector<Filme> &filmes, int &index)
 {
     // Insere o novo nodo
     if (node == nullptr)
@@ -95,7 +95,7 @@ NodeYear *insertRec(NodeYear *node, ArrayList<Filme> &filmes, int &index)
         int starYear = filmes[index].startYear;
         NodeYear *newNode = new NodeYear(starYear);
         newNode->height = 1;
-        newNode->indexList.add(index);
+        newNode->indexList.push_back(index);
         index++;
         return newNode;
     }
@@ -112,7 +112,7 @@ NodeYear *insertRec(NodeYear *node, ArrayList<Filme> &filmes, int &index)
     // Não cria uma nova lista se a duração já existir, apenas atualiza indexList
     else
     {
-        node->indexList.add(index);
+        node->indexList.push_back(index);
         index++;
         return node;
     }

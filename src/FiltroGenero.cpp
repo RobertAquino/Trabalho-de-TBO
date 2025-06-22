@@ -1,6 +1,7 @@
+#include <vector>
 #include "../Bibliotecas/FiltroGenero.hpp"
 
-FiltroGenero::FiltroGenero(Genres genre, HashMap<Genres, ArrayList<int>> &baseFilmes)
+FiltroGenero::FiltroGenero(Genres genre, HashMap<Genres, std::vector<int>> &baseFilmes)
     : genre(genre), baseFilmes(baseFilmes)
 {
 }
@@ -11,10 +12,10 @@ HashSet<int> FiltroGenero::aplicar()
 
     if (baseFilmes.containsKey(genre))
     {
-        std::optional<ArrayList<int>> filmesOpt = baseFilmes.get(genre);
+        std::optional<std::vector<int>> filmesOpt = baseFilmes.get(genre);
         if (filmesOpt.has_value())
         {
-            for (int i = 0; i < filmesOpt->getSize(); ++i)
+            for (int i = 0; i < filmesOpt->size(); ++i)
             {
                 result.put((*filmesOpt)[i]);
             }

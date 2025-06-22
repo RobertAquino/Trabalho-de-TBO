@@ -2,13 +2,14 @@
 
 #include "ArrayList.hpp"
 #include "Cinema.hpp"
+#include <vector>
 class NodePrice
 {
 
 public:
     float price;
     float maxPrice;
-    ArrayList<int> indexList;
+    std::vector<int> indexList;
     NodePrice *right;
     NodePrice *left;
     int height;
@@ -43,6 +44,6 @@ private:
     NodePrice *turnLeftRight(NodePrice **node);
     NodePrice *turnRightLeft(NodePrice **node);
     void balancing(NodePrice **node);
-    bool insertNode(NodePrice *root, ArrayList<Cinema> filmes, int &index);
-    NodePrice *insertRec(NodePrice *node, ArrayList<Cinema> filmes, int &index);
+    bool insertNode(NodePrice *root, std::vector<Cinema> filmes, int &index);
+    NodePrice *insertRec(NodePrice *node, std::vector<Cinema> filmes, int &index);
 };

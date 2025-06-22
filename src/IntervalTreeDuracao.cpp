@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Bibliotecas/ArrayList.hpp"
+#include <vector>
 #include "../Bibliotecas/Filme.hpp"
 #include "../Bibliotecas/IntervalTreeDuration.hpp"
 #include <climits>
@@ -75,10 +75,10 @@ void balancing(NodeDuration **node)
     else if (bl < -1 && balancingFactor((*node)->right) > 0)
         *node = turnRightLeft(node);
 }
-bool insertNode(NodeDuration **root, ArrayList<Filme> &filmes, int &index)
+bool insertNode(NodeDuration **root, std::vector<Filme> &filmes, int &index)
 {
     // Compara se a duração é valida. Alguns filmes tem duração nula
-    if (index >= filmes.getSize() || filmes[index].runTimesMinutes < 0)
+    if (index >= filmes.size() || filmes[index].runTimesMinutes < 0)
     {
         index++;
         return false;
@@ -87,7 +87,7 @@ bool insertNode(NodeDuration **root, ArrayList<Filme> &filmes, int &index)
     *root = insertRec(*root, filmes, index);
     return true;
 }
-NodeDuration *insertRec(NodeDuration *node, ArrayList<Filme> &filmes, int &index)
+NodeDuration *insertRec(NodeDuration *node, std::vector<Filme> &filmes, int &index)
 {
     // Insere o novo nodo
     if (node == nullptr)
@@ -95,7 +95,7 @@ NodeDuration *insertRec(NodeDuration *node, ArrayList<Filme> &filmes, int &index
         int duration = filmes[index].runTimesMinutes;
         NodeDuration *newNode = new NodeDuration(duration);
         newNode->height = 1;
-        newNode->indexList.add(index);
+        newNode->indexList.push_back(index);
         index++;
         return newNode;
     }
@@ -112,7 +112,7 @@ NodeDuration *insertRec(NodeDuration *node, ArrayList<Filme> &filmes, int &index
     // Não cria uma nova lista se a duração já existir, apenas atualiza indexList
     else
     {
-        node->indexList.add(index);
+        node->indexList.push_back(index);
         index++;
         return node;
     }
