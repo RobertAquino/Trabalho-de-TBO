@@ -91,7 +91,8 @@ private:
     int capacity;
     int size;
 
-    const int primes[] = {7, 23, 53, 73, 101, 211, 431, 863, 1741, 3469, 6949, 14033, 28813, 60493, 115249};
+    const int primes[] = {7, 23, 53, 73, 101, 211, 431, 863, 1741, 3469, 6949,
+                          14033, 28813, 60493, 115249, 216091, 430467};
     int primeIndex = 0;
 
     int hash(const K &key) const
