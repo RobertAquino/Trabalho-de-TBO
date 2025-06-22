@@ -30,4 +30,10 @@ public:
     {
         return hashMap.getSize();
     }
+
+    // operator[] permite acessar os valores armazenados
+    std::vector<K> operator[](int index) const
+    {
+        return hashMap[index];
+    }
 };

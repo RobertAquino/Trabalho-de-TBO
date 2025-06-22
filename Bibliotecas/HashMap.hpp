@@ -241,4 +241,17 @@ public:
 
         delete[] oldTable;
     }
+
+    // operator[] permite acessar uma lista de todos os valores armazenados
+    std::vector<V> operator[](int index) const
+    {
+        std::vector<V> valores;
+        HashNode<K, V> *node = table[index];
+        while (node != nullptr)
+        {
+            valores.push_back(node->value);
+            node = node->next;
+        }
+        return valores;
+    }
 };

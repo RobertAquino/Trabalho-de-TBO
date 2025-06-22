@@ -36,6 +36,62 @@ enum class Genres
     Adult = 26
 };
 
+Genres strToGenre(const std::string &str)
+{
+    if (str == "action")
+        return Genres::Action;
+    else if (str == "adventure")
+        return Genres::Adventure;
+    else if (str == "animation")
+        return Genres::Animation;
+    else if (str == "biography")
+        return Genres::Biography;
+    else if (str == "comedy")
+        return Genres::Comedy;
+    else if (str == "crime")
+        return Genres::Crime;
+    else if (str == "documentary")
+        return Genres::Documentary;
+    else if (str == "drama")
+        return Genres::Drama;
+    else if (str == "family")
+        return Genres::Family;
+    else if (str == "fantasy")
+        return Genres::Fantansy;
+    else if (str == "game_show")
+        return Genres::Game_Show;
+    else if (str == "history")
+        return Genres::History;
+    else if (str == "horror")
+        return Genres::Horror;
+    else if (str == "music")
+        return Genres::Music;
+    else if (str == "musical")
+        return Genres::Musicial;
+    else if (str == "mystery")
+        return Genres::Mystery;
+    else if (str == "news")
+        return Genres::News;
+    else if (str == "reality_tv")
+        return Genres::Reality_Tv;
+    else if (str == "romance")
+        return Genres::Romance;
+    else if (str == "sci-fi")
+        return Genres::Sci_fi;
+    else if (str == "short")
+        return Genres::Short;
+    else if (str == "sport")
+        return Genres::Sport;
+    else if (str == "talk_show")
+        return Genres::Talk_Show;
+    else if (str == "thriller")
+        return Genres::Thriller;
+    else if (str == "war")
+        return Genres::War;
+    else if (str == "adult")
+        return Genres::Adult;
+}
+
 enum class TitleType
 {
     movie = 0,
@@ -49,6 +105,30 @@ enum class TitleType
     tvSpecial = 8,
     tvShort = 9
 };
+TitleType strToTitleType(const std::string &str)
+{
+    if (str == "movie")
+        return TitleType::movie;
+    else if (str == "shortFilm")
+        return TitleType::shortFilm;
+    else if (str == "tvSeries")
+        return TitleType::tvSeries;
+    else if (str == "tvEpisode")
+        return TitleType::tvEpisode;
+    else if (str == "tvMiniSeries")
+        return TitleType::tvMiniSeries;
+    else if (str == "video")
+        return TitleType::video;
+    else if (str == "videoGame")
+        return TitleType::videoGame;
+    else if (str == "tvMovie")
+        return TitleType::tvMovie;
+    else if (str == "tvSpecial")
+        return TitleType::tvSpecial;
+    else if (str == "tvShort")
+        return TitleType::tvShort;
+    throw std::runtime_error("Tipo de título desconhecido: " + str);
+}
 
 class Filme
 {
@@ -95,7 +175,7 @@ public:
     }
 
     ~Filme();
-    void transformaString();
+    '' void transformaString();
 
     Cinema getCinema()
     {
