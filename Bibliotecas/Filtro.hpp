@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Cinema.hpp"
-#include "ArrayList.hpp"
+#include <vector>
+#include <string>
 #include "HashSet.hpp"
 #include "Filme.hpp"
 

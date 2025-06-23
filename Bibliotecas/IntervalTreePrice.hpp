@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ArrayList.hpp"
 #include "Cinema.hpp"
 #include <vector>
 class NodePrice

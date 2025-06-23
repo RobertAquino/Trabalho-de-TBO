@@ -1,7 +1,7 @@
 #include <sstream>
 #include "../Bibliotecas/Leitor.hpp"
 
-static std::vector<Filme> leitorFilmes(const std::string &nomeDoArquivo)
+std::vector<Filme> Leitor::leitorFilmes(const std::string &nomeDoArquivo)
 {
     std::ifstream arquivo(nomeDoArquivo);
     std::vector<Filme> catalogo;
@@ -40,7 +40,8 @@ static std::vector<Filme> leitorFilmes(const std::string &nomeDoArquivo)
     return catalogo;
 }
 
-static std::vector<Cinema> leitorCinema(const std::string &nomeDoArquivo, HashMap<std::string, Filme> &hashFilme)
+std::vector<Cinema> Leitor::leitorCinema(const std::string &nomeDoArquivo,
+                                         HashMap<std::string, Filme> &hashFilme)
 {
     std::ifstream arquivo(nomeDoArquivo);
     std::vector<Cinema> cinemas;

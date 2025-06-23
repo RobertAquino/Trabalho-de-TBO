@@ -35,61 +35,71 @@ enum class Genres
     Adult = 25
 };
 
+static void toLower(std::string &str)
+{
+    for (char &c : str)
+    {
+        c = static_cast<char>(std::tolower(c));
+    }
+}
+
 static Genres strToGenre(const std::string &str)
 {
-    if (str == "action")
+    std::string newStr = str;
+    toLower(newStr);
+    if (newStr == "action")
         return Genres::Action;
-    else if (str == "adventure")
+    else if (newStr == "adventure")
         return Genres::Adventure;
-    else if (str == "animation")
+    else if (newStr == "animation")
         return Genres::Animation;
-    else if (str == "biography")
+    else if (newStr == "biography")
         return Genres::Biography;
-    else if (str == "comedy")
+    else if (newStr == "comedy")
         return Genres::Comedy;
-    else if (str == "crime")
+    else if (newStr == "crime")
         return Genres::Crime;
-    else if (str == "documentary")
+    else if (newStr == "documentary")
         return Genres::Documentary;
-    else if (str == "drama")
+    else if (newStr == "drama")
         return Genres::Drama;
-    else if (str == "family")
+    else if (newStr == "family")
         return Genres::Family;
-    else if (str == "fantasy")
+    else if (newStr == "fantasy")
         return Genres::Fantansy;
-    else if (str == "game_show")
+    else if (newStr == "game-show")
         return Genres::Game_Show;
-    else if (str == "history")
+    else if (newStr == "history")
         return Genres::History;
-    else if (str == "horror")
+    else if (newStr == "horror")
         return Genres::Horror;
-    else if (str == "music")
+    else if (newStr == "music")
         return Genres::Music;
-    else if (str == "musical")
+    else if (newStr == "musical")
         return Genres::Musicial;
-    else if (str == "mystery")
+    else if (newStr == "mystery")
         return Genres::Mystery;
-    else if (str == "news")
+    else if (newStr == "news")
         return Genres::News;
-    else if (str == "reality_tv")
+    else if (newStr == "reality-tv")
         return Genres::Reality_Tv;
-    else if (str == "romance")
+    else if (newStr == "romance")
         return Genres::Romance;
-    else if (str == "sci-fi")
+    else if (newStr == "sci-fi")
         return Genres::Sci_fi;
-    else if (str == "short")
+    else if (newStr == "short")
         return Genres::Short;
-    else if (str == "sport")
+    else if (newStr == "sport")
         return Genres::Sport;
-    else if (str == "talk_show")
+    else if (newStr == "talk-show")
         return Genres::Talk_Show;
-    else if (str == "thriller")
+    else if (newStr == "thriller")
         return Genres::Thriller;
-    else if (str == "war")
+    else if (newStr == "war")
         return Genres::War;
-    else if (str == "adult")
+    else if (newStr == "adult")
         return Genres::Adult;
-    throw std::invalid_argument("Unknown genre: " + str);
+    throw std::invalid_argument("Unknown genre: " + newStr);
 }
 
 enum class TitleType
@@ -107,27 +117,29 @@ enum class TitleType
 };
 static TitleType strToTitleType(const std::string &str)
 {
-    if (str == "movie")
+    std::string newStr = str;
+    toLower(newStr);
+    if (newStr == "movie")
         return TitleType::movie;
-    else if (str == "shortFilm")
+    else if (newStr == "short")
         return TitleType::shortFilm;
-    else if (str == "tvSeries")
+    else if (newStr == "tvseries")
         return TitleType::tvSeries;
-    else if (str == "tvEpisode")
+    else if (newStr == "tvepisode")
         return TitleType::tvEpisode;
-    else if (str == "tvMiniSeries")
+    else if (newStr == "tvminiseries")
         return TitleType::tvMiniSeries;
-    else if (str == "video")
+    else if (newStr == "video")
         return TitleType::video;
-    else if (str == "videoGame")
+    else if (newStr == "videogame")
         return TitleType::videoGame;
-    else if (str == "tvMovie")
+    else if (newStr == "tvmovie")
         return TitleType::tvMovie;
-    else if (str == "tvSpecial")
+    else if (newStr == "tvspecial")
         return TitleType::tvSpecial;
-    else if (str == "tvShort")
+    else if (newStr == "tvshort")
         return TitleType::tvShort;
-    throw std::runtime_error("Tipo de título desconhecido: " + str);
+    throw std::invalid_argument("Tipo de título desconhecido: " + newStr);
 }
 
 class Cinema;
@@ -169,6 +181,7 @@ public:
         // Se a string for "\\N", 0 sera o valor padrão, caso ao contraio o valor sera lido.
         // "\\N" em vez de "\N" no código pois a primeira '\' é um caractere de escape.
 
+        std::cout << "ID" + tconst_str << std::endl;
         isAdult = (isAdult_str == "\\N") ? 0 : std::stoi(isAdult_str);
         startYear = (startYear_str == "\\N") ? 0 : std::stoi(startYear_str);
         endYear = (endYear_str == "\\N") ? 0 : std::stoi(endYear_str);

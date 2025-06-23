@@ -23,8 +23,8 @@ public:
     {
         cinemaId = cinemaId_str;
         nomeCinema = nomeCinema_str;
-        localizacao = Localizacao(stoi(coordenadaX_str), stoi(coordenadaY_str));
-        precoIngresso = stoi(precoIngresso_str);
+        localizacao = Localizacao(std::stoi(coordenadaX_str), std::stoi(coordenadaY_str));
+        precoIngresso = std::stod(precoIngresso_str);
 
         // Divide os IDs dos filmes
         std::stringstream ss_filmes(filmesEmExibicao_str);
