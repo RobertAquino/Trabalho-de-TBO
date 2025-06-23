@@ -49,8 +49,10 @@ public:
         for (int i = 0; i < listaBaseFilmes.size(); ++i)
         {
             Filme &filme = listaBaseFilmes[i];
+            std::cout << "Adicionando filme: " << filme.getTConst() << std::endl;
             hashFilme.put(filme.getTConst(), filme);
         }
+        std::cout << "HashMap de filmes criado com sucesso." << std::endl;
         listaBaseCinemas = leitor.leitorCinema(cinemasFile, hashFilme);
         std::cout << "Cinemas lidos: " << listaBaseCinemas.size() << std::endl;
 

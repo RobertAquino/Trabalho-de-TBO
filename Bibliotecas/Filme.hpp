@@ -181,7 +181,7 @@ public:
         // Se a string for "\\N", 0 sera o valor padrão, caso ao contraio o valor sera lido.
         // "\\N" em vez de "\N" no código pois a primeira '\' é um caractere de escape.
 
-        std::cout << "ID" + tconst_str << std::endl;
+        // std::cout << "ID" + tconst_str << std::endl;
         isAdult = (isAdult_str == "\\N") ? 0 : std::stoi(isAdult_str);
         startYear = (startYear_str == "\\N") ? 0 : std::stoi(startYear_str);
         endYear = (endYear_str == "\\N") ? 0 : std::stoi(endYear_str);
