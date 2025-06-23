@@ -3,7 +3,9 @@
 
 int main()
 {
-    Program program("DataBase/filmesCrop.txt", "DataBase/cinemas.txt");
+    std::string moviesFile = "DataBase/filmesCrop.txt";
+    std::string cinemasFile = "DataBase/cinemas.txt";
+    Program program(moviesFile, cinemasFile);
     program.test();
 
     return 0;

@@ -11,6 +11,7 @@
 class Leitor
 {
 public:
-    std::vector<Filme> leitorFilmes(std::string nomeDoArquivo);
-    std::vector<Cinema> leitorCinema(std::string nomeDoArquivo, HashMap<std::string, Filme> &hashFilme);
+    static std::vector<Filme> leitorFilmes(const std::string &nomeDoArquivo);
+    static std::vector<Cinema> leitorCinema(const std::string &nomeDoArquivo,
+                                            HashMap<std::string, Filme> &hashFilme);
 };

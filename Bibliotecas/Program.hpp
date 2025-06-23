@@ -13,8 +13,8 @@ class Program
 {
 
 private:
-    std::vector<Filme> &listaBaseFilmes;
-    std::vector<Cinema> &listaBaseCinemas;
+    std::vector<Filme> listaBaseFilmes;
+    std::vector<Cinema> listaBaseCinemas;
     Leitor leitor;
 
     HashMap<Genres, std::vector<Filme>> filmesPorGenero;
