@@ -3,8 +3,8 @@
 
 int main()
 {
-    Program program("Arquivo 1", "Arquivo 2");
-    program.run();
+    Program program("DataBase/filmesCrop.txt", "DataBase/cinemas.txt");
+    program.test();
 
     return 0;
 }

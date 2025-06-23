@@ -1,7 +1,9 @@
 #pragma once
 
+#include <string>
+#include <sstream>
 #include "Filme.hpp"
-#include "ArrayList.hpp"
+#include <vector>
 #include "Localizacao.hpp"
 #include "HashMap.hpp"
 #include <iostream>
@@ -13,7 +15,7 @@ public:
     std::string nomeCinema;
     Localizacao localizacao;
     double precoIngresso;
-    ArrayList<Filme> filmesEmExibicao;
+    std::vector<Filme> filmesEmExibicao;
 
     Cinema() = default;
     Cinema(const std::string &cinemaId_str, const std::string nomeCinema_str, const std::string coordenadaX_str, const std::string coordenadaY_str,
@@ -30,8 +32,11 @@ public:
         while (std::getline(ss_filmes, IdfilmeIndividual, ','))
         {
             std::optional<Filme> filmeEncontrado = hashFilme.get(IdfilmeIndividual);
-            filmesEmExibicao.add(filmeEncontrado.value());
+            if (filmeEncontrado)
+            {
+                filmesEmExibicao.push_back(filmeEncontrado.value());
+            }
         }
     }
-    ~Cinema();
+    ~Cinema() = default;
 };

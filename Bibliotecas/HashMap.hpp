@@ -2,7 +2,10 @@
 
 #include <iostream>
 #include <optional>
+#include <string>
+#include <vector>
 #include <stdexcept>
+#include "Filme.hpp"
 
 template <typename K, typename V>
 struct HashNode
@@ -75,6 +78,24 @@ struct HashFunc<char>
 };
 
 template <>
+struct HashFunc<Genres>
+{
+    int operator()(const Genres &chave) const
+    {
+        return static_cast<int>(chave);
+    }
+};
+
+template <>
+struct HashFunc<TitleType>
+{
+    int operator()(const TitleType &chave) const
+    {
+        return static_cast<int>(chave);
+    }
+};
+
+template <>
 struct HashFunc<bool>
 {
     int operator()(const bool &chave) const
@@ -91,8 +112,8 @@ private:
     int capacity;
     int size;
 
-    const int primes[] = {7, 23, 53, 73, 101, 211, 431, 863, 1741, 3469, 6949,
-                          14033, 28813, 60493, 115249, 216091, 430467};
+    const int primes[17] = {7, 23, 53, 73, 101, 211, 431, 863, 1741, 3469, 6949,
+                            14033, 28813, 60493, 115249, 216091, 430467};
     int primeIndex = 0;
 
     int hash(const K &key) const
@@ -243,16 +264,16 @@ public:
         delete[] oldTable;
     }
 
-    // operator[] permite acessar uma lista de todos os valores armazenados
-    std::vector<V> operator[](int index) const
+    // GET KEYS AT INDEX
+    std::vector<K> getKeysAtIndex(int index) const
     {
-        std::vector<V> valores;
+        std::vector<K> keys;
         HashNode<K, V> *node = table[index];
         while (node != nullptr)
         {
-            valores.push_back(node->value);
+            keys.push_back(node->key);
             node = node->next;
         }
-        return valores;
+        return keys;
     }
 };

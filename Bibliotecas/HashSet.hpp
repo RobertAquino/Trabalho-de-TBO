@@ -1,6 +1,7 @@
 #pragma once
 
 #include "HashMap.hpp"
+#include <vector>
 
 template <typename K>
 class HashSet
@@ -31,9 +32,17 @@ public:
         return hashMap.getSize();
     }
 
-    // operator[] permite acessar os valores armazenados
-    std::vector<K> operator[](int index) const
+    std::vector<K> getAll() const
     {
-        return hashMap[index];
+        std::vector<K> keys;
+        for (int i = 0; i < hashMap.getSize(); ++i)
+        {
+            std::vector<K> itens = hashMap.getKeysAtIndex(i);
+            for (const auto &item : itens)
+            {
+                keys.push_back(item);
+            }
+        }
+        return keys;
     }
 };

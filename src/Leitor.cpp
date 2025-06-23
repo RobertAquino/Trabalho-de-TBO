@@ -1,12 +1,10 @@
-#pragma once
-
 #include <sstream>
 #include "../Bibliotecas/Leitor.hpp"
 
-ArrayList<Filme> leitorFilmes(std::string nomeDoArquivo)
+std::vector<Filme> leitorFilmes(std::string &nomeDoArquivo)
 {
     std::ifstream arquivo(nomeDoArquivo);
-    ArrayList<Filme> catalogo;
+    std::vector<Filme> catalogo;
     if (!arquivo)
     {
         std::cout << "Não foi posivel abrir o arquivo" << std::endl;
@@ -36,16 +34,16 @@ ArrayList<Filme> leitorFilmes(std::string nomeDoArquivo)
 
         // Cria o objeto do Filme
         Filme filmeAtual(tconst, type, pTitle, oTitle, isAdult, startYear, endYear, runtime, genres);
-        catalogo.add(filmeAtual);
+        catalogo.push_back(filmeAtual);
     }
     arquivo.close();
     return catalogo;
 }
 
-ArrayList<Cinema> leitorCinema(std::string nomeDoArquivo, HashMap<std::string, Filme> &hashFilme)
+std::vector<Cinema> leitorCinema(std::string &nomeDoArquivo, HashMap<std::string, Filme> &hashFilme)
 {
     std::ifstream arquivo(nomeDoArquivo);
-    ArrayList<Cinema> cinemas;
+    std::vector<Cinema> cinemas;
     if (!arquivo)
     {
         std::cout << "Não foi posivel abrir o arquivo" << std::endl;
@@ -67,7 +65,7 @@ ArrayList<Cinema> leitorCinema(std::string nomeDoArquivo, HashMap<std::string, F
         std::getline(ss, filmes); // Lê o resto da linha
 
         Cinema cinemaAtual(cinemaid, nomeCinema, x, y, precoIngresso, filmes, hashFilme);
-        cinemas.add(cinemaAtual);
+        cinemas.push_back(cinemaAtual);
     }
     arquivo.close();
     return cinemas;

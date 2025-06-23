@@ -12,5 +12,5 @@ public:
         this->x = x;
         this->y = y;
     }
-    ~Localizacao();
+    ~Localizacao() = default;
 };

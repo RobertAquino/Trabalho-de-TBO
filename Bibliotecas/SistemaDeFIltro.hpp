@@ -128,7 +128,7 @@ private:
         HashSet<int> resultado;
         for (int i = 0; i < a.getSize(); ++i)
         {
-            std::vector<int> itens = a[i];
+            std::vector<int> itens = a.getAll();
             for (const auto &item : itens)
             {
                 if (b.contains(item))
@@ -145,7 +145,7 @@ private:
         HashSet<int> resultado = a;
         for (int i = 0; i < b.getSize(); ++i)
         {
-            std::vector<int> itens = b[i];
+            std::vector<int> itens = b.getAll();
             for (const auto &item : itens)
             {
                 if (!resultado.contains(item))
@@ -162,7 +162,7 @@ private:
         HashSet<int> resultado;
         for (int i = 0; i < total.getSize(); ++i)
         {
-            std::vector<int> itens = total[i];
+            std::vector<int> itens = total.getAll();
             for (const auto &item : itens)
             {
                 if (!sub.contains(item))

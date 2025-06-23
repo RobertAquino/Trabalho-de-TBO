@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ArrayList.hpp"
-#include "Cinema.hpp"
+#include <vector>
+#include <string>
 #include <iostream>
 #include <sstream>
 
@@ -21,22 +21,21 @@ enum class Genres
     History = 11,
     Horror = 12,
     Music = 13,
-    Music = 14,
-    Musicial = 15,
-    Mystery = 16,
-    News = 17,
-    Reality_Tv = 18,
-    Romance = 19,
-    Sci_fi = 20,
-    Short = 21,
-    Sport = 22,
-    Talk_Show = 23,
-    Thriller = 24,
-    War = 25,
-    Adult = 26
+    Musicial = 14,
+    Mystery = 15,
+    News = 16,
+    Reality_Tv = 17,
+    Romance = 18,
+    Sci_fi = 19,
+    Short = 20,
+    Sport = 21,
+    Talk_Show = 22,
+    Thriller = 23,
+    War = 24,
+    Adult = 25
 };
 
-Genres strToGenre(const std::string &str)
+static Genres strToGenre(const std::string &str)
 {
     if (str == "action")
         return Genres::Action;
@@ -90,6 +89,7 @@ Genres strToGenre(const std::string &str)
         return Genres::War;
     else if (str == "adult")
         return Genres::Adult;
+    throw std::invalid_argument("Unknown genre: " + str);
 }
 
 enum class TitleType
@@ -105,7 +105,7 @@ enum class TitleType
     tvSpecial = 8,
     tvShort = 9
 };
-TitleType strToTitleType(const std::string &str)
+static TitleType strToTitleType(const std::string &str)
 {
     if (str == "movie")
         return TitleType::movie;
@@ -130,10 +130,11 @@ TitleType strToTitleType(const std::string &str)
     throw std::runtime_error("Tipo de título desconhecido: " + str);
 }
 
+class Cinema;
+
 class Filme
 {
 public:
-    Cinema cinema;
     std::string tConst;
     std::string titleType;    // Mudar para enum TitleType
     std::string primaryGenre; // Mudar para enum Genres
@@ -143,7 +144,7 @@ public:
     short startYear;
     short endYear;
     int runTimesMinutes;
-    ArrayList<std::string> genres;
+    std::vector<std::string> genres;
 
     Filme(const std::string &tconst_str, const std::string &type_str, const std::string &pTitle_str,
           const std::string &oTitle_str, const std::string &isAdult_str, const std::string &startYear_str,
@@ -160,8 +161,8 @@ public:
          usando a vírgula ',' como o caractere delimitador*/
         while (std::getline(ss_genres, genero_individual, ','))
         {
-            /// Adiciona cada gênero encontrado na ArrayList
-            genres.add(genero_individual);
+            /// Adiciona cada gênero encontrado na std::vector
+            genres.push_back(genero_individual);
         }
 
         // ---- Lógica para tratar o '\N' e converter para número ----
@@ -174,17 +175,8 @@ public:
         runTimesMinutes = (runtime_str == "\\N") ? 0 : std::stoi(runtime_str);
     }
 
-    ~Filme();
-    '' void transformaString();
-
-    Cinema getCinema()
-    {
-        return cinema;
-    }
-    void setCinema(Cinema cinema)
-    {
-        this->cinema = cinema;
-    }
+    ~Filme() = default;
+    void transformaString();
 
     std::string getTConst()
     {
@@ -258,11 +250,12 @@ public:
         this->runTimesMinutes = runTimesMinutes;
     }
 
-    ArrayList<std::string> getGenres()
+    std::vector<std::string> getGenres()
     {
         return genres;
     }
-    void setGenres(const ArrayList<std::string> &genres)
+
+    void setGenres(const std::vector<std::string> &genres)
     {
         this->genres = genres;
     }

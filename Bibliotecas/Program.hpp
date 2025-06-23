@@ -3,6 +3,8 @@
 #include <iostream>
 
 #include <vector>
+#include <chrono>
+#include <string>
 #include "Filme.hpp"
 #include "Leitor.hpp"
 #include "SistemaDeFiltro.hpp"
@@ -11,8 +13,8 @@ class Program
 {
 
 private:
-    std::vector<Filme> listaBaseFilmes;
-    std::vector<Cinema> listaBaseCinemas;
+    std::vector<Filme> &listaBaseFilmes;
+    std::vector<Cinema> &listaBaseCinemas;
     Leitor leitor;
 
     HashMap<Genres, std::vector<Filme>> filmesPorGenero;
@@ -29,8 +31,18 @@ private:
 public:
     Program(const std::string &moviesFile, const std::string &cinemasFile)
     {
+        // Contador de tempo
+        std::cout << "Iniciando o programa..." << std::endl;
+        auto start = std::chrono::high_resolution_clock::now();
+
         // Lê os filmes e cinemas dos arquivos
         listaBaseFilmes = leitor.leitorFilmes(moviesFile);
+        std::cout << "Filmes lidos: " << listaBaseFilmes.size() << std::endl;
+
+        // Calcula o tempo de leitura dos filmes
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> duration = end - start;
+        std::cout << "Tempo de leitura dos filmes: " << duration.count() << " segundos" << std::endl;
 
         // Cria um HashMap para associar os filmes por ID
         HashMap<std::string, Filme> hashFilme;
@@ -40,9 +52,20 @@ public:
             hashFilme.put(filme.getTConst(), filme);
         }
         listaBaseCinemas = leitor.leitorCinema(cinemasFile, hashFilme);
+        std::cout << "Cinemas lidos: " << listaBaseCinemas.size() << std::endl;
+
+        // Calcula o tempo de leitura dos cinemas
+        end = std::chrono::high_resolution_clock::now();
+        duration = end - start;
+        std::cout << "Tempo de leitura dos cinemas: " << duration.count() << " segundos" << std::endl;
     }
-    ~Program();
+    ~Program() = default;
 
     // Ponto de partida para o programa
-    void run();
+    // void run();
+
+    void test()
+    {
+        std::cin.get();
+    }
 };
