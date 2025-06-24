@@ -40,11 +40,19 @@ public:
 
     Node *parse()
     {
-        std::cout << "Iniciando parse padrão\n";
+        std::cout << "Iniciando parse padrao\n";
 
         Node *expr = parseOr();
         expect(TokenType::END);
         printTree(expr);
+
+        if (!expr)
+        {
+            std::cerr << "Erro: expressao vazia ou invalida.\n";
+            return nullptr;
+        }
+
+        std::cout << "Parse concluido. Retornando a raiz da arvore: " << expr->value << '\n';
 
         return expr;
     }
@@ -53,7 +61,7 @@ public:
     {
         if (!node)
         {
-            std::cout << "Árvore vazia.\n";
+            std::cout << "Arvore vazia.\n";
             return;
         }
 
@@ -87,6 +95,12 @@ private:
             orNode->right = right;
             node = orNode;
         }
+
+        std::cout << "ParseOr concluido\n";
+        if (node->type == NodeType::OPERATOR && node->op == '|')
+        {
+            std::cout << "Encontrado operador OR na raiz da arvore: " << node->value << "\n";
+        }
         return node;
     }
 
@@ -103,6 +117,12 @@ private:
             andNode->right = right;
             node = andNode;
         }
+
+        std::cout << "ParseAnd concluido\n";
+        if (node->type == NodeType::OPERATOR && node->op == '&')
+        {
+            std::cout << "Encontrado operador AND na raiz da arvore: " << node->value << "\n";
+        }
         return node;
     }
 
@@ -116,6 +136,7 @@ private:
             notNode->left = operand; // Mude de 'right' para 'left' para consistência
             return notNode;
         }
+        std::cout << "ParseUnary concluido\n";
         return parsePrimary();
     }
     Node *parsePrimary()

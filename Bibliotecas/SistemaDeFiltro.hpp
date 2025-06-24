@@ -15,12 +15,13 @@ private:
     Node *rootNode = nullptr;
     HashMap<Genres, std::vector<int>> baseFilmesGenres;
     HashMap<TitleType, std::vector<int>> baseFilmesTitleTypes;
+    // Estrutura da arvore de ano;
 
 public:
     SistemaDeFiltro(const std::string &expression, HashMap<Genres, std::vector<int>> &baseFilmesGenres, HashMap<TitleType, std::vector<int>> &baseFilmesTitleTypes)
         : baseFilmesGenres(baseFilmesGenres), baseFilmesTitleTypes(baseFilmesTitleTypes)
     {
-        std::cout << "Construindo árvore de filtro a partir da expressão: " << expression << "\n";
+        std::cout << "Construindo arvore de filtro a partir da expressao: " << expression << "\n";
         Tokenizer tokenizer(expression);
         auto tokens = tokenizer.tokenize();
         tokenizer.printTokens();
@@ -28,11 +29,11 @@ public:
         rootNode = parser.parse();
         if (!rootNode)
         {
-            throw std::runtime_error("Erro ao analisar a expressão de filtro.");
+            throw std::runtime_error("Erro ao analisar a expressao de filtro.");
         }
 
         assosiateFilter(rootNode);
-        std::cout << "Árvore de filtro construída com sucesso.\n";
+        std::cout << "Arvore de filtro construída com sucesso.\n";
         printNode(rootNode, 0);
     }
 
