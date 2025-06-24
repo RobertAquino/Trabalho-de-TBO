@@ -32,8 +32,28 @@ public:
             throw std::runtime_error("Erro ao analisar a expressao de filtro.");
         }
 
+        std::cout << "Arvore de filtro criada com raiz: " << rootNode->value << "\n";
+        if (rootNode->type != NodeType::OPERATOR)
+        {
+            std::cout << "Raiz da arvore nao eh um operador, mas um filtro: " << rootNode->value << "\n";
+        }
+        else
+        {
+            std::cout << "Raiz da arvore eh um operador: " << rootNode->op << "\n";
+        }
         assosiateFilter(rootNode);
-        std::cout << "Arvore de filtro construída com sucesso.\n";
+        std::cout << "Arvore de filtro construida com sucesso.\n";
+        std::cout << "Imprimindo a arvore de filtro:\n";
+        std::cout << "---------------------------------\n";
+        std::cout << "Raiz: " << rootNode->value << "\n";
+        if (rootNode->type == NodeType::OPERATOR)
+        {
+            std::cout << "Tipo da raiz: Operador (" << rootNode->op << ")\n";
+        }
+        else if (rootNode->type == NodeType::FILTER)
+        {
+            std::cout << "Tipo da raiz: Filtro (" << rootNode->value << ")\n";
+        }
         printNode(rootNode, 0);
     }
 
@@ -45,6 +65,19 @@ public:
     // Avalia a expressão de filtro e retorna os filmes filtrados
     HashSet<int> filtrar(const HashSet<int> &base)
     {
+        if (!rootNode)
+        {
+            std::cerr << "Erro: raiz da árvore de filtro não está definida.\n";
+            throw std::runtime_error("Árvore de filtro não inicializada.");
+        }
+        std::cout << "Iniciando avaliação da árvore de filtro...\n";
+        if (base.getSize() == 0)
+        {
+            std::cerr << "Erro: base de filmes está vazia.\n";
+            throw std::runtime_error("Base de filmes vazia.");
+        }
+        std::cout << "Base de filmes contem " << base.getSize() << " itens.\n";
+        std::cout << "Avaliacao da arvore de filtro iniciada.\n";
         return avaliar(rootNode, base);
     }
 
@@ -61,7 +94,14 @@ private:
             return;
         if (node->type == NodeType::FILTER)
         {
+            std::cout << "Associando filtro: " << node->value << "\n";
             node->filter = construirFiltroAPartirDe(node->value);
+            if (!node->filter)
+            {
+                std::cerr << "Erro ao construir filtro a partir de: " << node->value << "\n";
+                throw std::runtime_error("Filtro inválido: " + node->value);
+            }
+            std::cout << "Filtro associado com sucesso: " << node->value << "\n";
         }
         assosiateFilter(node->left);
         assosiateFilter(node->right);
@@ -76,7 +116,9 @@ private:
             args = args.substr(1, args.size() - 2); // Remove { e }
             // Converte a string args para Genres
             // Exemplo: "#g{action}" → "action"
+            std::cout << "Construindo filtro de genero a partir de: " << args << "\n";
             Genres genre = strToGenre(args);
+            std::cout << "Gênero convertido: " << static_cast<int>(genre) << "\n";
             return new FiltroGenero(genre, baseFilmesGenres);
         }
         else if (raw.find("#d") == 0)
@@ -104,6 +146,7 @@ private:
 
         if (node->type == NodeType::FILTER)
         {
+            std::cout << "Aplicando filtro: " << node->value << "\n";
             return node->filter->aplicar();
         }
 
@@ -192,10 +235,11 @@ private:
     void printNode(Node *node, int depth) const
     {
         if (!node)
-            std::cout << "Nó nulo\n";
-        return;
+        {
+            return;
+        }
         for (int i = 0; i < depth; ++i)
-            std::cout << "  ";
+            std::cout << "\t";
 
         if (node->type == NodeType::FILTER)
             std::cout << "Filtro: " << node->value << "\n";

@@ -53,6 +53,19 @@ public:
         }
 
         std::cout << "Parse concluido. Retornando a raiz da arvore: " << expr->value << '\n';
+        std::cout << "Tipo do nó raiz: " << (expr->type == NodeType::OPERATOR ? "Operador" : "Filtro") << '\n';
+        if (expr->type == NodeType::OPERATOR)
+        {
+            std::cout << "Encontrado operador na raiz da arvore: " << expr->op << "\n";
+        }
+        else if (expr->type == NodeType::FILTER)
+        {
+            std::cout << "Encontrado filtro na raiz da arvore: " << expr->value << "\n";
+        }
+        else
+        {
+            std::cout << "Raiz da arvore nao eh um operador ou filtro.\n";
+        }
 
         return expr;
     }
@@ -61,7 +74,6 @@ public:
     {
         if (!node)
         {
-            std::cout << "Arvore vazia.\n";
             return;
         }
 
@@ -75,6 +87,10 @@ public:
         else if (node->type == NodeType::FILTER)
         {
             std::cout << "Filter: " << node->value << "\n";
+        }
+        else
+        {
+            std::cout << "Unknown node type\n";
         }
 
         printTree(node->left, depth + 1);

@@ -113,6 +113,10 @@ public:
         std::cout << "Sistema de filtro criado com sucesso." << std::endl;
         HashSet<int> resultado = sistemaDeFiltro->filtrar(idsFilmes);
         std::vector<int> ids = resultado.getAll();
+        if (ids.empty())
+        {
+            std::cout << "Nenhum filme encontrado com o filtro: " << expressao << std::endl;
+        }
         for (int id : ids)
         {
             Filme &filme = listaBaseFilmes[id];
