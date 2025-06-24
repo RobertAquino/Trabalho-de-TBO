@@ -9,6 +9,8 @@
 #include "Leitor.hpp"
 #include "SistemaDeFiltro.hpp"
 
+// Comentario de teste
+
 class Program
 {
 
