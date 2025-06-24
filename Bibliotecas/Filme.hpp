@@ -32,7 +32,8 @@ enum class Genres
     Talk_Show = 22,
     Thriller = 23,
     War = 24,
-    Adult = 25
+    Western = 25,
+    Adult = 26
 };
 
 static void toLower(std::string &str)
@@ -97,6 +98,8 @@ static Genres strToGenre(const std::string &str)
         return Genres::Thriller;
     else if (newStr == "war")
         return Genres::War;
+    else if (newStr == "western")
+        return Genres::Western;
     else if (newStr == "adult")
         return Genres::Adult;
     throw std::invalid_argument("Unknown genre: " + newStr);
@@ -156,7 +159,7 @@ public:
     short startYear;
     short endYear;
     int runTimesMinutes;
-    std::vector<std::string> genres;
+    std::vector<Genres> genres;
 
     Filme(const std::string &tconst_str, const std::string &type_str, const std::string &pTitle_str,
           const std::string &oTitle_str, const std::string &isAdult_str, const std::string &startYear_str,
@@ -174,7 +177,12 @@ public:
         while (std::getline(ss_genres, genero_individual, ','))
         {
             /// Adiciona cada gênero encontrado na std::vector
-            genres.push_back(genero_individual);
+            if (genero_individual == "\\N")
+            {
+                continue;
+            }
+            Genres genre = strToGenre(genero_individual);
+            genres.push_back(genre);
         }
 
         // ---- Lógica para tratar o '\N' e converter para número ----
@@ -200,7 +208,7 @@ public:
         this->tConst = tConst;
     }
 
-    std::string getTitleType()
+    std::string getTitleType() const
     {
         return titleType;
     }
@@ -263,12 +271,12 @@ public:
         this->runTimesMinutes = runTimesMinutes;
     }
 
-    std::vector<std::string> getGenres()
+    std::vector<Genres> getGenres() const
     {
         return genres;
     }
 
-    void setGenres(const std::vector<std::string> &genres)
+    void setGenres(const std::vector<Genres> &genres)
     {
         this->genres = genres;
     }

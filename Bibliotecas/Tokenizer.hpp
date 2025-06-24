@@ -27,6 +27,7 @@ struct Token
 class Tokenizer
 {
     std::string input;
+    std::vector<Token> tokens;
     size_t pos;
 
 public:
@@ -34,8 +35,8 @@ public:
 
     std::vector<Token> tokenize()
     {
-        std::vector<Token> tokens;
-
+        tokens.clear();
+        pos = 0;
         while (pos < input.size())
         {
             char c = input[pos];
@@ -76,6 +77,39 @@ public:
 
         tokens.push_back(Token(TokenType::END, ""));
         return tokens;
+    }
+
+    void printTokens()
+    {
+        for (const auto &token : tokens)
+        {
+            std::string typeStr;
+            switch (token.type)
+            {
+            case TokenType::IDENTIFIER:
+                typeStr = "IDENTIFIER";
+                break;
+            case TokenType::SYMBOL:
+                typeStr = "SYMBOL";
+                break;
+            case TokenType::LITERAL:
+                typeStr = "LITERAL";
+                break;
+            case TokenType::OPERATOR:
+                typeStr = "OPERATOR";
+                break;
+            case TokenType::PAREN_OPEN:
+                typeStr = "PAREN_OPEN";
+                break;
+            case TokenType::PAREN_CLOSE:
+                typeStr = "PAREN_CLOSE";
+                break;
+            case TokenType::END:
+                typeStr = "END";
+                break;
+            }
+            std::cout << "Token(" << typeStr << ", \"" << token.value << "\")\n";
+        }
     }
 
 private:

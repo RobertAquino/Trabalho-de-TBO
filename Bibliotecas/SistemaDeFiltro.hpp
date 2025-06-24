@@ -20,8 +20,10 @@ public:
     SistemaDeFiltro(const std::string &expression, HashMap<Genres, std::vector<int>> &baseFilmesGenres, HashMap<TitleType, std::vector<int>> &baseFilmesTitleTypes)
         : baseFilmesGenres(baseFilmesGenres), baseFilmesTitleTypes(baseFilmesTitleTypes)
     {
+        std::cout << "Construindo árvore de filtro a partir da expressão: " << expression << "\n";
         Tokenizer tokenizer(expression);
         auto tokens = tokenizer.tokenize();
+        tokenizer.printTokens();
         Parser parser(tokens);
         rootNode = parser.parse();
         if (!rootNode)
@@ -30,6 +32,8 @@ public:
         }
 
         assosiateFilter(rootNode);
+        std::cout << "Árvore de filtro construída com sucesso.\n";
+        printNode(rootNode, 0);
     }
 
     ~SistemaDeFiltro()
@@ -187,7 +191,8 @@ private:
     void printNode(Node *node, int depth) const
     {
         if (!node)
-            return;
+            std::cout << "Nó nulo\n";
+        return;
         for (int i = 0; i < depth; ++i)
             std::cout << "  ";
 

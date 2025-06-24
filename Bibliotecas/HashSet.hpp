@@ -45,4 +45,16 @@ public:
         }
         return keys;
     }
+
+    void print() const
+    {
+        for (int i = 0; i < hashMap.getSize(); ++i)
+        {
+            std::vector<K> itens = hashMap.getKeysAtIndex(i);
+            for (const auto &item : itens)
+            {
+                std::cout << item << " ";
+            }
+        }
+    }
 };

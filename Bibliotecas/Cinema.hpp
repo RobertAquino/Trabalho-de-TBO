@@ -28,11 +28,14 @@ public:
 
         // Divide os IDs dos filmes
         std::stringstream ss_filmes(filmesEmExibicao_str);
-        std::string IdfilmeIndividual;
-        while (std::getline(ss_filmes, IdfilmeIndividual, ','))
+        std::string idfilmeIndividual = "";
+
+        while (std::getline(ss_filmes, idfilmeIndividual, ','))
         {
-            std::optional<Filme> filmeEncontrado = hashFilme.get(IdfilmeIndividual);
-            if (filmeEncontrado)
+            idfilmeIndividual.erase(0, idfilmeIndividual.find_first_not_of(" \n\r\t"));
+            idfilmeIndividual.erase(idfilmeIndividual.find_last_not_of(" \n\r\t") + 1);
+            std::optional<Filme> filmeEncontrado = hashFilme.get(idfilmeIndividual);
+            if (filmeEncontrado.has_value())
             {
                 filmesEmExibicao.push_back(filmeEncontrado.value());
             }

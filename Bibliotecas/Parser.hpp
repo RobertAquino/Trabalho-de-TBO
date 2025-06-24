@@ -40,14 +40,44 @@ public:
 
     Node *parse()
     {
+        std::cout << "Iniciando parse padrão\n";
+
         Node *expr = parseOr();
         expect(TokenType::END);
+        printTree(expr);
+
         return expr;
+    }
+
+    void printTree(Node *node, int depth = 0)
+    {
+        if (!node)
+        {
+            std::cout << "Árvore vazia.\n";
+            return;
+        }
+
+        for (int i = 0; i < depth; ++i)
+            std::cout << "  ";
+
+        if (node->type == NodeType::OPERATOR)
+        {
+            std::cout << "Operator: " << node->op << "\n";
+        }
+        else if (node->type == NodeType::FILTER)
+        {
+            std::cout << "Filter: " << node->value << "\n";
+        }
+
+        printTree(node->left, depth + 1);
+        printTree(node->right, depth + 1);
     }
 
 private:
     Node *parseOr()
     {
+        std::cout << "Iniciando parseOr\n";
+        // parseOr -> parseAnd (| parseAnd)*
         Node *node = parseAnd();
         while (match(TokenType::OPERATOR, "|"))
         {
@@ -62,6 +92,8 @@ private:
 
     Node *parseAnd()
     {
+        std::cout << "Iniciando parseAnd\n";
+        // parseAnd -> parseUnary (& parseUnary)*
         Node *node = parseUnary();
         while (match(TokenType::OPERATOR, "&"))
         {
@@ -76,18 +108,27 @@ private:
 
     Node *parseUnary()
     {
+        std::cout << "Iniciando parseUnary\n";
         if (match(TokenType::OPERATOR, "!"))
         {
             Node *operand = parseUnary();
             Node *notNode = new Node(NodeType::OPERATOR, '!');
-            notNode->right = operand;
+            notNode->left = operand; // Mude de 'right' para 'left' para consistência
             return notNode;
         }
         return parsePrimary();
     }
-
     Node *parsePrimary()
     {
+        std::cout << "Iniciando parsePrimary\n";
+        std::cout << "Pos atual: " << pos << "\n";
+        std::cout << "Tokens restantes: " << tokens.size() - pos << "\n";
+        if (pos >= tokens.size())
+        {
+            throw std::runtime_error("Erro: fim dos tokens alcançado inesperadamente.");
+        }
+
+        std::cout << "Token atual: " << tokens[pos].value << "\n";
         if (match(TokenType::PAREN_OPEN))
         {
             Node *node = parseOr();
@@ -103,6 +144,7 @@ private:
             std::string args;
             if (check(TokenType::SYMBOL, "{") || check(TokenType::SYMBOL, "["))
             {
+                std::cout << "Encontrado bloco de argumentos: " + filtroRaw + "\n";
                 args = parseArgumentBlock();
                 filtroRaw += args;
             }
@@ -125,6 +167,7 @@ private:
         }
 
         result += advance().value; // fecha o bloco
+        std::cout << "Bloco de argumentos parseado: " << result << "\n";
         return result;
     }
 

@@ -112,8 +112,8 @@ private:
     int capacity;
     int size;
 
-    const int primes[17] = {7, 23, 53, 73, 101, 211, 431, 863, 1741, 3469, 6949,
-                            14033, 28813, 60493, 115249, 216091, 430467};
+    const int primes[19] = {7, 23, 53, 73, 101, 211, 431, 863, 1741, 3469, 6949, 14033, 28813, 60493,
+                            115249, 216091, 430467, 860933, 1721903};
     int primeIndex = 0;
 
     int hash(const K &key) const
@@ -242,6 +242,13 @@ public:
     void resize()
     {
         int oldCapacity = capacity;
+
+        if (primeIndex + 1 >= sizeof(primes) / sizeof(primes[0]))
+        {
+            // No more primes available, handle this error or use a different growth strategy
+            throw std::runtime_error("HashMap maximum capacity reached - no more prime numbers for resizing.");
+        }
+
         capacity = primes[++primeIndex];
         HashNode<K, V> **oldTable = table;
         table = new HashNode<K, V> *[capacity];

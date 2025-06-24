@@ -44,6 +44,8 @@ std::vector<Cinema> Leitor::leitorCinema(const std::string &nomeDoArquivo,
                                          HashMap<std::string, Filme> &hashFilme)
 {
     std::ifstream arquivo(nomeDoArquivo);
+    std::cout << "Lendo arquivo: " << nomeDoArquivo << std::endl;
+
     std::vector<Cinema> cinemas;
     if (!arquivo)
     {
