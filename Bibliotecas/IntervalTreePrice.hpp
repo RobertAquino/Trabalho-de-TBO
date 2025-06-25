@@ -43,8 +43,8 @@ public:
     NodePrice *turnLeftRight(NodePrice **node);
     NodePrice *turnRightLeft(NodePrice **node);
     void balancing(NodePrice **node);
-    bool insertNode(NodePrice *root, std::vector<Cinema> &filmes, int &index);
-    NodePrice *insertRec(NodePrice *node, std::vector<Cinema> &filmes, int &index);
+    bool insertNode(NodePrice *root, std::vector<Cinema> &filmes, int index);
+    NodePrice *insertRec(NodePrice *node, std::vector<Cinema> &filmes, int index);
 };
 
 int IntervalTreePrice::greaterValue(int a, int b)
@@ -65,43 +65,45 @@ int IntervalTreePrice::balancingFactor(NodePrice *node)
 }
 NodePrice *IntervalTreePrice::turnLeft(NodePrice **node)
 {
-    NodePrice *head = (*node);
-    NodePrice *leftNode = head->left;
-    NodePrice *rightSon = leftNode->right;
+    NodePrice *head = *node;
+    NodePrice *rightNode = head->right;
+    NodePrice *leftOfRight = rightNode->left;
 
-    leftNode->right = head;
-    head->left = rightSon;
+    rightNode->left = head;
+    head->right = leftOfRight;
 
-    leftNode->height = greaterValue(nodeHeight(leftNode->right), nodeHeight(leftNode->left)) + 1;
-    head->height = greaterValue(nodeHeight(head->right), nodeHeight(head->left)) + 1;
+    head->height = greaterValue(nodeHeight(head->left), nodeHeight(head->right)) + 1;
+    rightNode->height = greaterValue(nodeHeight(rightNode->left), nodeHeight(rightNode->right)) + 1;
 
-    (*node) = leftNode;
-    return (*node);
+    *node = rightNode;
+    return *node;
 }
+
 NodePrice *IntervalTreePrice::turnRight(NodePrice **node)
 {
-    NodePrice *head = (*node);
-    NodePrice *rightNode = head->right;
-    NodePrice *leftSon = rightNode->left;
+    NodePrice *head = *node;
+    NodePrice *leftNode = head->left;
+    NodePrice *rightOfLeft = leftNode->right;
 
-    head->right = leftSon;
-    rightNode->left = head;
+    leftNode->right = head;
+    head->left = rightOfLeft;
 
-    rightNode->height = greaterValue(nodeHeight(rightNode->right), nodeHeight(rightNode->left)) + 1;
-    head->height = greaterValue(nodeHeight(head->right), nodeHeight(head->left)) + 1;
+    head->height = greaterValue(nodeHeight(head->left), nodeHeight(head->right)) + 1;
+    leftNode->height = greaterValue(nodeHeight(leftNode->left), nodeHeight(leftNode->right)) + 1;
 
-    (*node) = rightNode;
-    return (*node);
+    *node = leftNode;
+    return *node;
 }
+
 NodePrice *IntervalTreePrice::turnLeftRight(NodePrice **node)
 {
-    (*node)->left = turnLeft(&(*node)->right);
-    return turnRight(node);
+    (*node)->left = turnRight(&(*node)->left);
+    return turnLeft(node);
 }
 NodePrice *IntervalTreePrice::turnRightLeft(NodePrice **node)
 {
-    (*node)->right = turnRight(&(*node)->right);
-    return turnLeft(node);
+    (*node)->right = turnLeft(&(*node)->right);
+    return turnRight(node);
 }
 void IntervalTreePrice::balancing(NodePrice **node)
 {
@@ -109,27 +111,26 @@ void IntervalTreePrice::balancing(NodePrice **node)
 
     // Decide qual é a rotação necessária
     if (bl < -1 && balancingFactor((*node)->right) <= 0)
-        *node = turnLeft(node);
-    else if (bl > 1 && balancingFactor((*node)->left) >= 0)
         *node = turnRight(node);
+    else if (bl > 1 && balancingFactor((*node)->left) >= 0)
+        *node = turnLeft(node);
     else if (bl > 1 && balancingFactor((*node)->left) < 0)
         *node = turnLeftRight(node);
     else if (bl < -1 && balancingFactor((*node)->right) > 0)
         *node = turnRightLeft(node);
 }
-bool IntervalTreePrice::insertNode(NodePrice *root, std::vector<Cinema> &cinemas, int &index)
+bool IntervalTreePrice::insertNode(NodePrice *root, std::vector<Cinema> &cinemas, int index)
 {
     // Compara se a duração é valida. Alguns filmes tem duração nula
     if (index >= cinemas.size() || cinemas[index].precoIngresso < 0)
     {
-        index++;
         return false;
     }
 
     root = insertRec(root, cinemas, index);
     return true;
 }
-NodePrice *IntervalTreePrice::insertRec(NodePrice *node, std::vector<Cinema> &cinemas, int &index)
+NodePrice *IntervalTreePrice::insertRec(NodePrice *node, std::vector<Cinema> &cinemas, int index)
 {
     // Insere o novo nodo
     if (node == nullptr)
@@ -138,7 +139,6 @@ NodePrice *IntervalTreePrice::insertRec(NodePrice *node, std::vector<Cinema> &ci
         NodePrice *newNode = new NodePrice(price);
         newNode->height = 1;
         newNode->indexList.push_back(index);
-        index++;
         return newNode;
     }
     // Procura o nodo nulo
@@ -155,7 +155,6 @@ NodePrice *IntervalTreePrice::insertRec(NodePrice *node, std::vector<Cinema> &ci
     else
     {
         node->indexList.push_back(index);
-        index++;
         return node;
     }
     // atualiza a altura do nó

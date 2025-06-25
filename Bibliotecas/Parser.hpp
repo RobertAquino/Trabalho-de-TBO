@@ -20,6 +20,7 @@ struct Node
     std::string value;
     Node *left = nullptr;
     Node *right = nullptr;
+    bool isCinema = false;
     Node(NodeType type, char op = '\0', Filtro *filter = nullptr, const std::string &value = "")
         : type(type), op(op), filter(filter), value(value), left(nullptr), right(nullptr) {}
     ~Node()

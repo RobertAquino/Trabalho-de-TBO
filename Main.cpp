@@ -6,7 +6,7 @@ int main()
     std::string moviesFile = "DataBase/filmesCrop.txt";
     std::string cinemasFile = "DataBase/cinemas.txt";
     Program program(moviesFile, cinemasFile);
-    program.test();
+    program.run();
 
     return 0;
 }

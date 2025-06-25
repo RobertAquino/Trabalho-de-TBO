@@ -14,7 +14,7 @@ class Leitor
 public:
     static std::vector<Filme> leitorFilmes(const std::string &nomeDoArquivo);
     static std::vector<Cinema> leitorCinema(const std::string &nomeDoArquivo,
-                                            HashMap<std::string, Filme> &hashFilme);
+                                            HashMap<std::string, Filme *> &hashFilme);
 };
 
 std::vector<Filme> Leitor::leitorFilmes(const std::string &nomeDoArquivo)
@@ -57,7 +57,7 @@ std::vector<Filme> Leitor::leitorFilmes(const std::string &nomeDoArquivo)
 }
 
 std::vector<Cinema> Leitor::leitorCinema(const std::string &nomeDoArquivo,
-                                         HashMap<std::string, Filme> &hashFilme)
+                                         HashMap<std::string, Filme *> &hashFilme)
 {
     std::ifstream arquivo(nomeDoArquivo);
     std::cout << "Lendo arquivo: " << nomeDoArquivo << std::endl;
@@ -87,5 +87,6 @@ std::vector<Cinema> Leitor::leitorCinema(const std::string &nomeDoArquivo,
         cinemas.push_back(cinemaAtual);
     }
     arquivo.close();
+    std::cout << "Arquivo lido.\n";
     return cinemas;
 }

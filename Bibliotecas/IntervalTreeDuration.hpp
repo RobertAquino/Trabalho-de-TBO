@@ -43,8 +43,8 @@ public:
     NodeDuration *turnLeftRight(NodeDuration **node);
     NodeDuration *turnRightLeft(NodeDuration **node);
     void balancing(NodeDuration **node);
-    bool insertNode(NodeDuration **root, std::vector<Filme> &filmes, int &index);
-    NodeDuration *insertRec(NodeDuration *node, std::vector<Filme> &filmes, int &index);
+    bool insertNode(NodeDuration **root, std::vector<Filme> &filmes, int index);
+    NodeDuration *insertRec(NodeDuration *node, std::vector<Filme> &filmes, int index);
 };
 
 int IntervalTreeDuration::greaterValue(int a, int b)
@@ -95,13 +95,13 @@ NodeDuration *IntervalTreeDuration::turnRight(NodeDuration **node)
 }
 NodeDuration *IntervalTreeDuration::turnLeftRight(NodeDuration **node)
 {
-    (*node)->left = turnLeft(&(*node)->right);
-    return turnRight(node);
+    (*node)->left = turnRight(&(*node)->left);
+    return turnLeft(node);
 }
 NodeDuration *IntervalTreeDuration::turnRightLeft(NodeDuration **node)
 {
-    (*node)->right = turnRight(&(*node)->right);
-    return turnLeft(node);
+    (*node)->right = turnLeft(&(*node)->right);
+    return turnRight(node);
 }
 void IntervalTreeDuration::balancing(NodeDuration **node)
 {
@@ -109,27 +109,29 @@ void IntervalTreeDuration::balancing(NodeDuration **node)
 
     // Decide qual é a rotação necessária
     if (bl < -1 && balancingFactor((*node)->right) <= 0)
-        *node = turnLeft(node);
-    else if (bl > 1 && balancingFactor((*node)->left) >= 0)
         *node = turnRight(node);
+    else if (bl > 1 && balancingFactor((*node)->left) >= 0)
+        *node = turnLeft(node);
     else if (bl > 1 && balancingFactor((*node)->left) < 0)
         *node = turnLeftRight(node);
     else if (bl < -1 && balancingFactor((*node)->right) > 0)
         *node = turnRightLeft(node);
 }
-bool IntervalTreeDuration::insertNode(NodeDuration **root, std::vector<Filme> &filmes, int &index)
+bool IntervalTreeDuration::insertNode(NodeDuration **root, std::vector<Filme> &filmes, int index)
 {
     // Compara se a duração é valida. Alguns filmes tem duração nula
     if (index >= filmes.size() || filmes[index].runTimesMinutes < 0)
     {
-        index++;
         return false;
     }
+    // root = newNode
+    // newNode
+    //
 
     *root = insertRec(*root, filmes, index);
     return true;
 }
-NodeDuration *IntervalTreeDuration::insertRec(NodeDuration *node, std::vector<Filme> &filmes, int &index)
+NodeDuration *IntervalTreeDuration::insertRec(NodeDuration *node, std::vector<Filme> &filmes, int index)
 {
     // Insere o novo nodo
     if (node == nullptr)
@@ -138,7 +140,6 @@ NodeDuration *IntervalTreeDuration::insertRec(NodeDuration *node, std::vector<Fi
         NodeDuration *newNode = new NodeDuration(duration);
         newNode->height = 1;
         newNode->indexList.push_back(index);
-        index++;
         return newNode;
     }
     // Procura o nodo nulo
@@ -155,7 +156,6 @@ NodeDuration *IntervalTreeDuration::insertRec(NodeDuration *node, std::vector<Fi
     else
     {
         node->indexList.push_back(index);
-        index++;
         return node;
     }
     // atualiza a altura do nó

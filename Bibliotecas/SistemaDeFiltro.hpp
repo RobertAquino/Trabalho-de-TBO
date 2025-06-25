@@ -8,6 +8,8 @@
 #include "YearFilter.hpp"
 #include "DurationFilter.hpp"
 #include "FiltroTitleType.hpp"
+#include "PriceFilter.hpp"
+#include "Cinema.hpp"
 
 class SistemaDeFiltro
 {
@@ -18,9 +20,12 @@ private:
     IntervalTreeYear *baseFilmesYear;
     IntervalTreeDuration *baseFilmesDuration;
 
+    const std::vector<Filme> *filmesRef;
+    const std::vector<Cinema> *cinemasRef;
+
 public:
-    SistemaDeFiltro(const std::string &expression, IntervalTreeYear *baseFilmesYear, IntervalTreeDuration *baseFilmesDuration, HashMap<Genres, std::vector<int>> &baseFilmesGenres, HashMap<TitleType, std::vector<int>> &baseFilmesTitleTypes)
-        : baseFilmesGenres(baseFilmesGenres), baseFilmesTitleTypes(baseFilmesTitleTypes), baseFilmesYear(baseFilmesYear), baseFilmesDuration(baseFilmesDuration)
+    SistemaDeFiltro(const std::string &expression, std::vector<Filme> *filmesRef, std::vector<Cinema> *cinemasRef, IntervalTreeYear *baseFilmesYear, IntervalTreeDuration *baseFilmesDuration, HashMap<Genres, std::vector<int>> &baseFilmesGenres, HashMap<TitleType, std::vector<int>> &baseFilmesTitleTypes)
+        : baseFilmesGenres(baseFilmesGenres), baseFilmesTitleTypes(baseFilmesTitleTypes), baseFilmesYear(baseFilmesYear), baseFilmesDuration(baseFilmesDuration), filmesRef(filmesRef), cinemasRef(cinemasRef)
     {
         // std::cout << "Construindo arvore de filtro a partir da expressao: " << expression << "\n";
         Tokenizer tokenizer(expression);
@@ -42,7 +47,7 @@ public:
         {
             std::cout << "Raiz da arvore eh um operador: " << rootNode->op << "\n";
         }
-        assosiateFilter(rootNode);
+        associateFilter(rootNode);
         // std::cout << "Arvore de filtro construida com sucesso.\n";
         // std::cout << "Imprimindo a arvore de filtro:\n";
         // std::cout << "---------------------------------\n";
@@ -64,7 +69,7 @@ public:
     }
 
     // Avalia a expressão de filtro e retorna os filmes filtrados
-    HashSet<int> filtrar(const HashSet<int> &base)
+    HashSet<int> filtrar(const HashSet<int> &baseFilmes, const HashSet<int> &baseCinema)
     {
         if (!rootNode)
         {
@@ -72,14 +77,14 @@ public:
             throw std::runtime_error("Árvore de filtro não inicializada.");
         }
         std::cout << "Iniciando avaliação da árvore de filtro...\n";
-        if (base.getSize() == 0)
+        if (baseFilmes.getSize() == 0)
         {
-            std::cerr << "Erro: base de filmes está vazia.\n";
+            std::cerr << "Erro: baseFilmes de filmes está vazia.\n";
             throw std::runtime_error("Base de filmes vazia.");
         }
-        std::cout << "Base de filmes contem " << base.getSize() << " itens.\n";
+        std::cout << "Base de filmes contem " << baseFilmes.getSize() << " itens.\n";
         std::cout << "Avaliacao da arvore de filtro iniciada.\n";
-        return avaliar(rootNode, base);
+        return avaliar(rootNode, baseFilmes, baseCinema);
     }
 
     void print() const
@@ -89,7 +94,7 @@ public:
 
 private:
     // Recursivamente liga value → Filtro*
-    void assosiateFilter(Node *node)
+    void associateFilter(Node *node)
     {
         if (!node)
             return;
@@ -102,10 +107,14 @@ private:
                 std::cerr << "Erro ao construir filtro a partir de: " << node->value << "\n";
                 throw std::runtime_error("Filtro inválido: " + node->value);
             }
+            if (dynamic_cast<FiltroAno *>(node->filter) || dynamic_cast<FiltroPreco *>(node->filter))
+            {
+                node->isCinema = true;
+            }
             std::cout << "Filtro associado com sucesso: " << node->value << "\n";
         }
-        assosiateFilter(node->left);
-        assosiateFilter(node->right);
+        associateFilter(node->left);
+        associateFilter(node->right);
     }
 
     Filtro *construirFiltroAPartirDe(const std::string &raw)
@@ -132,7 +141,7 @@ private:
             int minDuration = std::stoi(args.substr(0, virgula));
             int maxDuration = std::stoi(args.substr(virgula + 1));
 
-            return new FiltroDuration(baseFilmesDuration->root, minDuration, maxDuration);
+            return new FiltroDuration(baseFilmesDuration->root, maxDuration, minDuration);
         }
         else if (raw.find("#a") == 0)
         {
@@ -143,7 +152,8 @@ private:
 
             int minYear = std::stoi(args.substr(0, virgula));
             int maxYear = std::stoi(args.substr(virgula + 1));
-            return new FiltroAno(baseFilmesYear->root, minYear, maxYear);
+
+            return new FiltroAno(baseFilmesYear->root, maxYear, minYear);
         }
         else if (raw.find("#t") == 0)
         {
@@ -155,7 +165,7 @@ private:
         return nullptr;
     }
 
-    HashSet<int> avaliar(Node *node, const HashSet<int> &base)
+    HashSet<int> avaliar(Node *node, const HashSet<int> &baseFilmes, const HashSet<int> &baseCinemas)
     {
         if (!node)
             return {};
@@ -168,12 +178,28 @@ private:
 
         if (node->op == '!')
         {
-            auto sub = avaliar(node->right, base);
-            return subtrair(base, sub);
+            auto sub = avaliar(node->right, baseFilmes, baseCinemas);
+
+            return subtrair(dynamic_cast<FiltroAno *>(node->filter) ||
+                                    dynamic_cast<FiltroPreco *>(node->filter)
+                                ? baseCinemas
+                                : baseFilmes,
+                            sub);
         }
 
-        auto esq = avaliar(node->left, base);
-        auto dir = avaliar(node->right, base);
+        auto esq = avaliar(node->left, baseFilmes, baseCinemas);
+        auto dir = avaliar(node->right, baseFilmes, baseCinemas);
+
+        if (node->left->isCinema && !(node->right->isCinema))
+        {
+            dir = cinemaTransform(dir);
+            node->right->isCinema = true;
+        }
+        else if (!(node->left->isCinema) && node->right->isCinema)
+        {
+            esq = cinemaTransform(esq);
+            node->left->isCinema = true;
+        }
 
         if (node->op == '&')
         {
@@ -197,6 +223,21 @@ private:
         }
 
         return {};
+    }
+
+    HashSet<int> cinemaTransform(const HashSet<int> filmes)
+    {
+        HashSet<int> resultado;
+        std::vector<int> filmesId = filmes.getAll();
+        for (const auto &id : filmesId)
+        {
+            std::vector<int> cinemas = filmesRef->at(id).cinemasIds;
+            for (const auto &cinema : cinemas)
+            {
+                resultado.put(cinema);
+            }
+        }
+        return resultado;
     }
 
     HashSet<int> interseccao(const HashSet<int> &a, const HashSet<int> &b)
@@ -238,17 +279,18 @@ private:
     HashSet<int> subtrair(const HashSet<int> &total, const HashSet<int> &sub)
     {
         HashSet<int> resultado;
-        for (int i = 0; i < total.getSize(); ++i)
+        std::vector<int> itensTotal = total.getAll();
+
+        for (auto &item : itensTotal)
         {
-            std::vector<int> itens = total.getAll();
-            for (const auto &item : itens)
+            if (sub.contains(item))
             {
-                if (!sub.contains(item))
-                {
-                    resultado.put(item);
-                }
+                continue;
             }
+
+            resultado.put(item);
         }
+
         return resultado;
     }
 

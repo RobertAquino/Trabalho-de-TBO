@@ -15,8 +15,8 @@ public:
     int height;
 
 public:
-    NodeYear(int duration) : year(year), maxYear(year),
-                             right(nullptr), left(nullptr), height(0) {}
+    NodeYear(int year) : year(year), maxYear(year),
+                         right(nullptr), left(nullptr), height(0) {}
     ~NodeYear()
     {
         delete left;
@@ -42,8 +42,8 @@ public:
     NodeYear *turnLeftRight(NodeYear **node);
     NodeYear *turnRightLeft(NodeYear **node);
     void balancing(NodeYear **node);
-    bool insertNode(NodeYear **root, std::vector<Filme> &filmes, int &index);
-    NodeYear *insertRec(NodeYear *node, std::vector<Filme> &filmes, int &index);
+    bool insertNode(NodeYear **root, std::vector<Filme> &filmes, int index);
+    NodeYear *insertRec(NodeYear *node, std::vector<Filme> &filmes, int index);
 };
 
 int IntervalTreeYear::greaterValue(int a, int b)
@@ -94,13 +94,13 @@ NodeYear *IntervalTreeYear::turnRight(NodeYear **node)
 }
 NodeYear *IntervalTreeYear::turnLeftRight(NodeYear **node)
 {
-    (*node)->left = turnLeft(&(*node)->right);
-    return turnRight(node);
+    (*node)->left = turnRight(&(*node)->left);
+    return turnLeft(node);
 }
 NodeYear *IntervalTreeYear::turnRightLeft(NodeYear **node)
 {
-    (*node)->right = turnRight(&(*node)->right);
-    return turnLeft(node);
+    (*node)->right = turnLeft(&(*node)->right);
+    return turnRight(node);
 }
 void IntervalTreeYear::balancing(NodeYear **node)
 {
@@ -108,27 +108,26 @@ void IntervalTreeYear::balancing(NodeYear **node)
 
     // Decide qual é a rotação necessária
     if (bl < -1 && balancingFactor((*node)->right) <= 0)
-        *node = turnLeft(node);
-    else if (bl > 1 && balancingFactor((*node)->left) >= 0)
         *node = turnRight(node);
+    else if (bl > 1 && balancingFactor((*node)->left) >= 0)
+        *node = turnLeft(node);
     else if (bl > 1 && balancingFactor((*node)->left) < 0)
         *node = turnLeftRight(node);
     else if (bl < -1 && balancingFactor((*node)->right) > 0)
         *node = turnRightLeft(node);
 }
-bool IntervalTreeYear::insertNode(NodeYear **root, std::vector<Filme> &filmes, int &index)
+bool IntervalTreeYear::insertNode(NodeYear **root, std::vector<Filme> &filmes, int index)
 {
     // Compara se a duração é valida. Alguns filmes tem duração nula
     if (index >= filmes.size() || filmes[index].startYear < 0)
     {
-        index++;
         return false;
     }
 
     *root = insertRec(*root, filmes, index);
     return true;
 }
-NodeYear *IntervalTreeYear::insertRec(NodeYear *node, std::vector<Filme> &filmes, int &index)
+NodeYear *IntervalTreeYear::insertRec(NodeYear *node, std::vector<Filme> &filmes, int index)
 {
     // Insere o novo nodo
     if (node == nullptr)
@@ -137,7 +136,6 @@ NodeYear *IntervalTreeYear::insertRec(NodeYear *node, std::vector<Filme> &filmes
         NodeYear *newNode = new NodeYear(startYear);
         newNode->height = 1;
         newNode->indexList.push_back(index);
-        index++;
         return newNode;
     }
     // Procura o nodo nulo
@@ -154,7 +152,6 @@ NodeYear *IntervalTreeYear::insertRec(NodeYear *node, std::vector<Filme> &filmes
     else
     {
         node->indexList.push_back(index);
-        index++;
         return node;
     }
     // atualiza a altura do nó
@@ -163,11 +160,10 @@ NodeYear *IntervalTreeYear::insertRec(NodeYear *node, std::vector<Filme> &filmes
     // Chama a função de balanceamento para garantir que a árvore seja uma AVL.
     balancing(&node);
 
-    // atualiza a maior duração da subárvore. Útil para função de filtragem
     int maxLeft = (node->left ? node->left->maxYear : INT_MIN);
     int maxRight = (node->right ? node->right->maxYear : INT_MIN);
     int maxCurrent = (node->year > maxLeft) ? node->year : maxLeft;
-    node->year = (maxCurrent > maxRight) ? maxCurrent : maxRight;
+    node->maxYear = (maxCurrent > maxRight) ? maxCurrent : maxRight;
 
     return node;
 }

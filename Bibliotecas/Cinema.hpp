@@ -15,11 +15,11 @@ public:
     std::string nomeCinema;
     Localizacao localizacao;
     double precoIngresso;
-    std::vector<Filme> filmesEmExibicao;
+    std::vector<Filme *> filmesEmExibicao;
 
     Cinema() = default;
     Cinema(const std::string &cinemaId_str, const std::string nomeCinema_str, const std::string coordenadaX_str, const std::string coordenadaY_str,
-           const std::string &precoIngresso_str, const std::string filmesEmExibicao_str, HashMap<std::string, Filme> &hashFilme)
+           const std::string &precoIngresso_str, const std::string filmesEmExibicao_str, HashMap<std::string, Filme *> &hashFilme)
     {
         cinemaId = cinemaId_str;
         nomeCinema = nomeCinema_str;
@@ -34,7 +34,7 @@ public:
         {
             idfilmeIndividual.erase(0, idfilmeIndividual.find_first_not_of(" \n\r\t"));
             idfilmeIndividual.erase(idfilmeIndividual.find_last_not_of(" \n\r\t") + 1);
-            std::optional<Filme> filmeEncontrado = hashFilme.get(idfilmeIndividual);
+            std::optional<Filme *> filmeEncontrado = hashFilme.get(idfilmeIndividual);
             if (filmeEncontrado.has_value())
             {
                 filmesEmExibicao.push_back(filmeEncontrado.value());

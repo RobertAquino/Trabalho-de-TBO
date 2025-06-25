@@ -10,11 +10,11 @@ private:
     int maxDuration;
     int minDuration;
 
-    void collectIndex(int maxDuration, int minDuration, NodeDuration *node, HashSet<int> result);
+    void collectIndex(int maxDuration, int minDuration, NodeDuration *node, HashSet<int> &result);
     HashSet<int> filterByInterval(int maxDuration, int minDuration, NodeDuration *root);
 
 public:
-    FiltroDuration(NodeDuration *root, int maxYear, int minYear) : root(root), maxDuration(maxDuration), minDuration(minDuration) {}
+    FiltroDuration(NodeDuration *root, int maxDuration, int minDuration) : root(root), maxDuration(maxDuration), minDuration(minDuration) {}
 
     HashSet<int> aplicar() override
     {
@@ -22,29 +22,38 @@ public:
         return result;
     }
 };
-void FiltroDuration::collectIndex(int maxDuration, int minDuration, NodeDuration *node, HashSet<int> result)
+
+void FiltroDuration::collectIndex(int max, int min, NodeDuration *node, HashSet<int> &result)
 {
+    // Caso base: se o nó é nulo, não há o que fazer.
     if (node == nullptr)
     {
         return;
     }
 
-    if (node->duration < minDuration || node->duration > maxDuration)
-        return;
-
-    if (node->duration <= maxDuration && node->duration >= minDuration)
+    // 1. Verifica se vale a pena ir para a ESQUERDA
+    // Só vamos para a esquerda se o valor mínimo do intervalo for menor que a duração do nó atual.
+    if (min < node->duration)
     {
-        for (int index = 0; index < node->indexList.size(); index++)
+        collectIndex(max, min, node->left, result);
+    }
+
+    // 2. Coleta os índices do NÓ ATUAL
+    // Se a duração do nó atual está dentro do intervalo [min, max].
+    if (node->duration >= min && node->duration <= max)
+    {
+        for (size_t i = 0; i < node->indexList.size(); ++i)
         {
-            result.put(node->indexList[index]);
+            result.put(node->indexList[i]);
         }
     }
 
-    if (node->left != nullptr && node->maxDuration > minDuration)
-        collectIndex(maxDuration, minDuration, node->left, result);
-
-    if (node->right != nullptr && node->maxDuration < maxDuration)
-        collectIndex(maxDuration, minDuration, node->right, result);
+    // 3. Verifica se vale a pena ir para a DIREITA
+    // Só vamos para a direita se o valor máximo do intervalo for maior que a duração do nó atual.
+    if (max > node->duration)
+    {
+        collectIndex(max, min, node->right, result);
+    }
 }
 
 HashSet<int> FiltroDuration::filterByInterval(int maxDuration, int minDuration, NodeDuration *root)

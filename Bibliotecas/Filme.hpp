@@ -160,6 +160,7 @@ public:
     short endYear;
     int runTimesMinutes;
     std::vector<Genres> genres;
+    std::vector<int> cinemasIds = {};
 
     Filme(const std::string &tconst_str, const std::string &type_str, const std::string &pTitle_str,
           const std::string &oTitle_str, const std::string &isAdult_str, const std::string &startYear_str,
