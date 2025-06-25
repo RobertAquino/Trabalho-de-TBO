@@ -1,8 +1,19 @@
-
+#pragma once
 #include "IntervalTreePrice.hpp"
+#include "Filtro.hpp"
 #include <vector>
 
-void collectIndex(int maxPrice, NodePrice *node, std::vector<int> &result)
+class FiltroPreco : public Filtro
+{
+private:
+    double maxPrice;
+    HashMap<double, std::vector<int>> &result;
+
+public:
+    std::vector<int> filterUntilMaxPrice() override;
+};
+
+void collectIndex(double maxPrice, NodePrice *node, HashMap<double, std::vector<int>> &result)
 {
     if (node == nullptr)
     {
@@ -16,7 +27,7 @@ void collectIndex(int maxPrice, NodePrice *node, std::vector<int> &result)
     {
         for (int index = 0; index < node->indexList.size(); index++)
         {
-            result.push_back(node->indexList[index]);
+            result.(node->indexList[index]);
         }
     }
 

@@ -1,4 +1,4 @@
-#pragma ocen
+#pragma o
 
 #include "Filtro.hpp"
 #include <vector>
