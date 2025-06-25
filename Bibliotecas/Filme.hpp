@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 
+// Enumeração de todos os gêneros do arquivo
 enum class Genres
 {
     Action = 0,

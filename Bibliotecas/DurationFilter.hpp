@@ -1,4 +1,5 @@
 #pragma once
+
 #include "IntervalTreeDuration.hpp"
 #include "Filtro.hpp"
 #include <vector>
@@ -23,23 +24,24 @@ public:
     }
 };
 
+// função responsável por juntar todas as listas dentro de um intervalo, criando apenas uma lista
 void FiltroDuration::collectIndex(int max, int min, NodeDuration *node, HashSet<int> &result)
 {
-    // Caso base: se o nó é nulo, não há o que fazer.
+    // retorna quando o nodo for nulo
     if (node == nullptr)
     {
         return;
     }
 
-    // 1. Verifica se vale a pena ir para a ESQUERDA
-    // Só vamos para a esquerda se o valor mínimo do intervalo for menor que a duração do nó atual.
+    // Se o nodo for maior do que o intervalo mínimo, a função chama recursivamente para o nodo a esquerda,
+    // com intuito de obter todos os nós até o intervalo mínimo
     if (min < node->duration)
     {
         collectIndex(max, min, node->left, result);
     }
 
-    // 2. Coleta os índices do NÓ ATUAL
-    // Se a duração do nó atual está dentro do intervalo [min, max].
+    // Se o nodo estiver entre o limite de duração, todos os valores deste nó são copiados para
+    // a lista de resultados
     if (node->duration >= min && node->duration <= max)
     {
         for (size_t i = 0; i < node->indexList.size(); ++i)
@@ -48,8 +50,8 @@ void FiltroDuration::collectIndex(int max, int min, NodeDuration *node, HashSet<
         }
     }
 
-    // 3. Verifica se vale a pena ir para a DIREITA
-    // Só vamos para a direita se o valor máximo do intervalo for maior que a duração do nó atual.
+    // Se o nodo for menor do que o intervalo máximo de duração, a função chama recursivamente para o nodo da esquerdam
+    // com o intuito de obter todos os nós até o intervalo máximo
     if (max > node->duration)
     {
         collectIndex(max, min, node->right, result);
@@ -63,6 +65,8 @@ HashSet<int> FiltroDuration::filterByInterval(int maxDuration, int minDuration, 
     if (minDuration < 0 || maxDuration < minDuration)
         return result;
 
+    // Esta função chama uma função auxiliar para percorrer todos os nodos da lista dentro de um intervalo para obter
+    // todos os filmes dentro dessa duração
     collectIndex(maxDuration, minDuration, root, result);
     return result;
 }

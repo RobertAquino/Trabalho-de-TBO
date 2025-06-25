@@ -118,7 +118,7 @@ void IntervalTreeYear::balancing(NodeYear **node)
 }
 bool IntervalTreeYear::insertNode(NodeYear **root, std::vector<Filme> &filmes, int index)
 {
-    // Compara se a duração é valida. Alguns filmes tem duração nula
+    // Compara se o indice e o ano é valido.
     if (index >= filmes.size() || filmes[index].startYear < 0)
     {
         return false;
@@ -148,7 +148,7 @@ NodeYear *IntervalTreeYear::insertRec(NodeYear *node, std::vector<Filme> &filmes
         node->right = insertRec(node->right, filmes, index);
     }
 
-    // Não cria uma nova lista se a duração já existir, apenas atualiza indexList
+    // Não cria uma nova lista se o nó com este ano já existir, apenas atualiza indexList
     else
     {
         node->indexList.push_back(index);

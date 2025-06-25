@@ -24,21 +24,20 @@ public:
 
 void FiltroAno::collectIndex(int maxYear, int minYear, NodeYear *node, HashSet<int> &result)
 {
-    // Caso base: se o nó é nulo, não há o que fazer.
+    // Retorna se o nodo é nulo
     if (node == nullptr)
     {
         return;
     }
-
-    // 1. Verifica se vale a pena ir para a ESQUERDA
-    // Só vamos para a esquerda se o valor mínimo do intervalo for menor que a duração do nó atual.
+    // Verifica se o nodo é maior do que o intervalo mínimo, se for, a função chama recursivamente para
+    //  a esquerda até chegar no limite inferior do intervalo
     if (minYear < node->year)
     {
         collectIndex(maxYear, minYear, node->left, result);
     }
 
-    // 2. Coleta os índices do NÓ ATUAL
-    // Se a duração do nó atual está dentro do intervalo [min, max].
+    // Verifica se o nodo atual está dentro do limite minímo e máximo e adiciona todos os indices de indexList
+    // no HashSet result
     if (node->year >= minYear && node->year <= maxYear)
     {
         for (size_t i = 0; i < node->indexList.size(); ++i)
@@ -47,8 +46,8 @@ void FiltroAno::collectIndex(int maxYear, int minYear, NodeYear *node, HashSet<i
         }
     }
 
-    // 3. Verifica se vale a pena ir para a DIREITA
-    // Só vamos para a direita se o valor máximo do intervalo for maior que a duração do nó atual.
+    // Verifica se o nodo atual é menor do que o limite superir, se for, a função chama recursivamente a
+    // a direito buscando todos os nodos até chegar no limite superior
     if (maxYear > node->year)
     {
         collectIndex(maxYear, minYear, node->right, result);
@@ -62,6 +61,8 @@ HashSet<int> FiltroAno::filterByInterval(int maxYear, int minYear, NodeYear *roo
     if (minYear < 0 || maxYear < minYear)
         return result;
 
+    // A função collectIndex é chamada como função auxiliar para percorrer todos os nodos contidos dentro dos
+    // intervalos máximos e mínimos
     collectIndex(maxYear, minYear, root, result);
     return result;
 }

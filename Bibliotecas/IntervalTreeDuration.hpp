@@ -119,14 +119,11 @@ void IntervalTreeDuration::balancing(NodeDuration **node)
 }
 bool IntervalTreeDuration::insertNode(NodeDuration **root, std::vector<Filme> &filmes, int index)
 {
-    // Compara se a duração é valida. Alguns filmes tem duração nula
+    // Compara se o indice e a duração é valida. Alguns filmes tem duração nula
     if (index >= filmes.size() || filmes[index].runTimesMinutes < 0)
     {
         return false;
     }
-    // root = newNode
-    // newNode
-    //
 
     *root = insertRec(*root, filmes, index);
     return true;
@@ -152,7 +149,7 @@ NodeDuration *IntervalTreeDuration::insertRec(NodeDuration *node, std::vector<Fi
         node->right = insertRec(node->right, filmes, index);
     }
 
-    // Não cria uma nova lista se a duração já existir, apenas atualiza indexList
+    // Não cria um novo nó se a árvore possuir esta duração, apenas atualiza indexList
     else
     {
         node->indexList.push_back(index);

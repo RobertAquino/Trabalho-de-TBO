@@ -25,9 +25,11 @@ struct Node
         : type(type), op(op), filter(filter), value(value), left(nullptr), right(nullptr) {}
     ~Node()
     {
-        delete filter;
-        delete left;
-        delete right;
+
+        if (left)
+            delete left;
+        if (right)
+            delete right;
     }
 };
 
@@ -41,8 +43,6 @@ public:
 
     Node *parse()
     {
-        // std::cout << "Iniciando parse padrao\n";
-
         Node *expr = parseOr();
         expect(TokenType::END);
         printTree(expr);
@@ -53,7 +53,6 @@ public:
             return nullptr;
         }
 
-        // std::cout << "Parse concluido. Retornando a raiz da arvore: " << expr->value << '\n';
         std::cout << "Tipo do nó raiz: " << (expr->type == NodeType::OPERATOR ? "Operador" : "Filtro") << '\n';
         if (expr->type == NodeType::OPERATOR)
         {
@@ -101,8 +100,6 @@ public:
 private:
     Node *parseOr()
     {
-        // std::cout << "Iniciando parseOr\n";
-        //  parseOr -> parseAnd (| parseAnd)*
         Node *node = parseAnd();
         while (match(TokenType::OPERATOR, "|"))
         {
@@ -113,7 +110,6 @@ private:
             node = orNode;
         }
 
-        // std::cout << "ParseOr concluido\n";
         if (node->type == NodeType::OPERATOR && node->op == '|')
         {
             std::cout << "Encontrado operador OR na raiz da arvore: " << node->value << "\n";
@@ -123,8 +119,6 @@ private:
 
     Node *parseAnd()
     {
-        // std::cout << "Iniciando parseAnd\n";
-        //  parseAnd -> parseUnary (& parseUnary)*
         Node *node = parseUnary();
         while (match(TokenType::OPERATOR, "&"))
         {
@@ -135,7 +129,6 @@ private:
             node = andNode;
         }
 
-        // std::cout << "ParseAnd concluido\n";
         if (node->type == NodeType::OPERATOR && node->op == '&')
         {
             std::cout << "Encontrado operador AND na raiz da arvore: " << node->value << "\n";
@@ -145,7 +138,6 @@ private:
 
     Node *parseUnary()
     {
-        // std::cout << "Iniciando parseUnary\n";
         if (match(TokenType::OPERATOR, "!"))
         {
             Node *operand = parseUnary();
@@ -153,14 +145,10 @@ private:
             notNode->left = operand; // Mude de 'right' para 'left' para consistência
             return notNode;
         }
-        // std::cout << "ParseUnary concluido\n";
         return parsePrimary();
     }
     Node *parsePrimary()
     {
-        // std::cout << "Iniciando parsePrimary\n";
-        // std::cout << "Pos atual: " << pos << "\n";
-        // std::cout << "Tokens restantes: " << tokens.size() - pos << "\n";
         if (pos >= tokens.size())
         {
             throw std::runtime_error("Erro: fim dos tokens alcançado inesperadamente.");

@@ -26,12 +26,13 @@ private:
     HashMap<TitleType, std::vector<int>> filmesPorTitleType;
     IntervalTreeDuration filmesPorDuracao;
     IntervalTreeYear filmesPorYear;
+    IntervalTreePrice cinemasPorPreco;
+    KDTree *cinemasPorLocation = nullptr;
 
     SistemaDeFiltro *sistemaDeFiltro = nullptr;
 
     void populate()
     {
-        // std::cout << listaBaseFilmes.size() << " filmes na lista base." << std::endl;
 
         for (int i = 0; i < listaBaseCinemas.size(); ++i)
         {
@@ -46,6 +47,8 @@ private:
                     std::cerr << "Aviso: Filme em exibicao no cinema " << i << " eh nulo.\n";
                 }
             }
+
+            cinemasPorPreco.insertNode(&cinemasPorPreco.root, listaBaseCinemas, i);
         }
 
         // Verifica se a lista de filmes está vazia
@@ -58,7 +61,6 @@ private:
         for (int i = 0; i < listaBaseFilmes.size(); ++i)
         {
             Filme &filme = listaBaseFilmes[i];
-            // std::cout << "Processando filme: " << filme.getTConst() << " - " << filme.getPrimaryTitle() << std::endl;
 
             filmesPorYear.insertNode(&filmesPorYear.root, listaBaseFilmes, i);
             filmesPorDuracao.insertNode(&filmesPorDuracao.root, listaBaseFilmes, i);
@@ -70,30 +72,23 @@ private:
             std::vector<Genres> generos = filme.getGenres();
             for (Genres &genre : generos)
             {
-                // std::cout << "Adicionando gênero: " << static_cast<int>(genre) << " ao filme: " << filme.getTConst() << std::endl;
                 if (!filmesPorGenero.containsKey(genre))
                 {
-                    // std::cout << "Criando novo vetor para gênero: " << static_cast<int>(genre) << std::endl;
                     std::vector<int> emptyVector;
                     filmesPorGenero.put(genre, emptyVector);
                 }
                 filmesPorGenero.get(genre).value().get().push_back(i);
-                // std::cout << "Tamanho do vetor para gênero " << static_cast<int>(genre) << ": "
-                //<< filmesPorGenero.get(genre).value().size() << std::endl;
             }
 
             // Processa o TitleType
             TitleType titleType = strToTitleType(filme.getTitleType());
-            // std::cout << "TitleType: " << filme.getTitleType() << " convertido para: " << static_cast<int>(titleType) << std::endl;
+
             if (!filmesPorTitleType.containsKey(titleType))
             {
-                // std::cout << "Criando novo vetor para TitleType: " << filme.getTitleType() << std::endl;
                 std::vector<int> emptyVector;
                 filmesPorTitleType.put(titleType, emptyVector);
             }
             filmesPorTitleType.get(titleType).value().get().push_back(i);
-            //::cout << "Tamanho do vetor para TitleType " << filme.getTitleType() << ": "
-            //<< filmesPorTitleType.get(titleType).value().size() << std::endl;
         }
 
         for (int i = 0; i < listaBaseCinemas.size(); ++i)
@@ -101,46 +96,39 @@ private:
             idsCinemas.put(i);
         }
 
-        // std::cout << "População dos HashMaps concluída." << std::endl;
-        // std::cout << filmesPorGenero.getSize() << " gêneros distintos encontrados." << std::endl;
+        cinemasPorLocation = new KDTree(listaBaseCinemas, listaBaseCinemas);
     }
 
 public:
     Program(const std::string &moviesFile, const std::string &cinemasFile)
     {
         // Contador de tempo
-        // std::cout << "Iniciando o programa..." << std::endl;
         auto start = std::chrono::high_resolution_clock::now();
 
         // Lê os filmes e cinemas dos arquivos
         listaBaseFilmes = leitor.leitorFilmes(moviesFile);
-        // std::cout << "Filmes lidos: " << listaBaseFilmes.size() << std::endl;
 
         // Calcula o tempo de leitura dos filmes
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration = end - start;
-        // std::cout << "Tempo de leitura dos filmes: " << duration.count() << " segundos" << std::endl;
 
         // Cria um HashMap para associar os filmes por ID
         hashFilme = new HashMap<std::string, Filme *>(listaBaseFilmes.size());
         for (int i = 0; i < listaBaseFilmes.size(); ++i)
         {
             Filme &filme = listaBaseFilmes[i];
-            // std::cout << "Adicionando filme: " << filme.getTConst() << std::endl;
             hashFilme->put(filme.getTConst(), &filme);
         }
-        // std::cout << "HashMap de filmes criado com sucesso." << std::endl;
         listaBaseCinemas = leitor.leitorCinema(cinemasFile, *hashFilme);
-        // std::cout << "Cinemas lidos: " << listaBaseCinemas.size() << std::endl;
 
         // Calcula o tempo de leitura dos cinemas
         end = std::chrono::high_resolution_clock::now();
         duration = end - start;
-        // td::cout << "Tempo de leitura dos cinemas: " << duration.count() << " segundos" << std::endl;
     }
     ~Program()
     {
         delete hashFilme;
+        delete cinemasPorLocation;
     }
 
     // Ponto de partida para o programa
@@ -174,9 +162,20 @@ public:
 
             std::cout << "Criando arvore de expressao...";
             start = std::chrono::high_resolution_clock::now();
-            sistemaDeFiltro = new SistemaDeFiltro(expressao, &listaBaseFilmes, &listaBaseCinemas,
-                                                  &filmesPorYear, &filmesPorDuracao, filmesPorGenero,
-                                                  filmesPorTitleType);
+            if (opc == 1)
+            {
+                sistemaDeFiltro = new SistemaDeFiltro(expressao, false, &listaBaseFilmes, &listaBaseCinemas,
+                                                      cinemasPorLocation, &cinemasPorPreco,
+                                                      &filmesPorYear, &filmesPorDuracao, filmesPorGenero,
+                                                      filmesPorTitleType);
+            }
+            else
+            {
+                sistemaDeFiltro = new SistemaDeFiltro(expressao, true, &listaBaseFilmes, &listaBaseCinemas,
+                                                      cinemasPorLocation, &cinemasPorPreco,
+                                                      &filmesPorYear, &filmesPorDuracao, filmesPorGenero,
+                                                      filmesPorTitleType);
+            }
             end = std::chrono::high_resolution_clock::now();
             duration = end - start;
             totalDuration += duration;
@@ -259,58 +258,3 @@ public:
         }
     }
 };
-
-/*    void test()
-    {
-        // std::cout << "Iniciando testes..." << std::endl;
-        auto start = std::chrono::high_resolution_clock::now();
-        populate();
-        // std::cout << "População dos HashMaps concluída." << std::endl;
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> duration = end - start;
-        // std::cout << "Tempo de população dos HashMaps: " << duration.count() << " segundos" << std::endl;
-
-        std::string expressao = "#g{horror}&!(#a{1800,000})";
-        // std::cout << "Filtro:" + expressao << std::endl;
-        // std::cout << "Filtrando filmes..." << std::endl;
-        sistemaDeFiltro = new SistemaDeFiltro(expressao, &listaBaseFilmes, &listaBaseCinemas, &filmesPorYear, &filmesPorDuracao, filmesPorGenero, filmesPorTitleType);
-        // std::cout << "Sistema de filtro criado com sucesso." << std::endl;
-        HashSet<int> resultado = sistemaDeFiltro->filtrar(idsFilmes, idsCinemas);
-        std::vector<int> ids = resultado.getAll();
-        if (ids.empty())
-        {
-            std::cout << "Nenhum filme encontrado com o filtro: " << expressao << std::endl;
-
-            // std::cout << "E lista esperado: " << std::endl;
-            // std::cout << "Quantidade de Filmes do gênero Adventure: " << filmesPorGenero.get(Genres::Adventure).value().get().size() << std::endl;
-        }
-        else
-        {
-            std::cout << "Quantidade de filmes encontrados com o filtro (" << expressao << "): " << ids.size() << std::endl;
-        }
-        if (ids.size() <= 500)
-        {
-            for (int id : ids)
-            {
-                Filme &filme = listaBaseFilmes[id];
-                std::cout << "Filme: " << filme.getTConst() << " - " << filme.getPrimaryTitle() << std::endl;
-            }
-        }
-        std::cin.get();
-    }
-
-    void test2()
-    {
-        HashMap<Genres, std::vector<int>> testMap;
-        testMap.put(Genres::Adventure, std::vector<int>());
-        testMap.get(Genres::Adventure).value().get().push_back(1);
-        testMap.get(Genres::Adventure).value().get().push_back(3);
-        testMap.get(Genres::Adventure).value().get().push_back(5);
-        std::cout << testMap.get(Genres::Adventure).value().get().size() << std::endl; // Deve imprimir 1
-        for (int id : testMap.get(Genres::Adventure).value().get())
-        {
-            std::cout << "ID do filme: " << id << std::endl; // Deve imprimir 1, 3, 5
-        }
-    }
-
-*/

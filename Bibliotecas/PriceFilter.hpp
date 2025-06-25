@@ -10,7 +10,7 @@ private:
     double maxPrice;
 
     void collectIndex(double maxPrice, NodePrice *node, HashSet<int> &result);
-    HashSet<int> filterUntilMaxPrice(int maxPrice, NodePrice *root);
+    HashSet<int> filterUntilMaxPrice(double maxPrice, NodePrice *root);
 
 public:
     FiltroPreco(NodePrice *root, double maxPrice) : maxPrice(maxPrice), root(root) {}
@@ -21,38 +21,42 @@ public:
     }
 };
 
-void FiltroPreco::collectIndex(double maxPrice, NodePrice *node, HashSet<int> &baseFilmes)
+void FiltroPreco::collectIndex(double maxPrice, NodePrice *node, HashSet<int> &result)
 {
+    // Retorna se o nodo for nulo
     if (node == nullptr)
     {
         return;
     }
 
-    if (node->price > maxPrice)
-        return;
+    // A função é chamada recursivamente a esquerda para receber todos os valores menores do que o intervalo
+    collectIndex(maxPrice, node->left, result);
 
-    if (node->price <= maxPrice)
+    // Se o preço do nó for maior do que o limite de preço a função retorna
+    if (node->price > maxPrice)
     {
-        for (int index = 0; index < node->indexList.size(); index++)
-        {
-            baseFilmes.put(node->indexList[index]);
-        }
+        return;
     }
 
-    if (node->left != nullptr)
-        collectIndex(maxPrice, node->left, baseFilmes);
+    // Adiciona na lista de resultados todos os cinemas que estão dentro do intervalo de preço
+    for (size_t i = 0; i < node->indexList.size(); ++i)
+    {
+        result.put(node->indexList[i]);
+    }
 
-    if (node->right != nullptr)
-        collectIndex(maxPrice, node->right, baseFilmes);
+    // A função é chamada recursivamente para receber todos os valores a direita do nó raiz, ainda dentro
+    // intervalo de preço
+    collectIndex(maxPrice, node->right, result);
 }
-
-HashSet<int> FiltroPreco::filterUntilMaxPrice(int maxPrice, NodePrice *root)
+HashSet<int> FiltroPreco::filterUntilMaxPrice(double maxPrice, NodePrice *root)
 {
     HashSet<int> result;
 
     if (maxPrice < 0)
         return result;
 
+    // Esta função chama uma função auxiliar para percorrer todos os nodos na árvore que estão dentro
+    // do intervalo, e coloca o índice de todos os cinemas dentro da lista result
     collectIndex(maxPrice, root, result);
     return result;
 }

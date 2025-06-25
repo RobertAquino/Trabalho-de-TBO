@@ -108,7 +108,6 @@ public:
                 typeStr = "END";
                 break;
             }
-            // std::cout << "Token(" << typeStr << ", \"" << token.value << "\")\n";
         }
     }
 
@@ -118,7 +117,7 @@ private:
         size_t start = pos;
         while (pos < input.size() &&
                    (std::isalnum(input[pos]) || input[pos] == '#' || input[pos] == '_') ||
-               input[pos] == '-')
+               input[pos] == '-' || input[pos] == '.')
             ++pos;
         return input.substr(start, pos - start);
     }

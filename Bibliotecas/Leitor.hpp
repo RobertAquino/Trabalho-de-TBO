@@ -30,7 +30,8 @@ std::vector<Filme> Leitor::leitorFilmes(const std::string &nomeDoArquivo)
     std::string linha;
     std::getline(arquivo, linha); // Ignora o cabeçalho
 
-    // Primeiro, usa o getline para ler o arquivo e pegar a linha inteira, que fica armazenada em uma única string, assim: "tt7917518\tshort\tThe Battle II\t...etc"
+    // Primeiro, usa o getline para ler o arquivo e pegar a linha inteira, que fica armazenada em uma única string,
+    // assim: "tt7917518\tshort\tThe Battle II\t...etc"
     while (std::getline(arquivo, linha))
     {
         // stringstream permite "quebrar" a string

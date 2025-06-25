@@ -5,11 +5,13 @@
 #include "Parser.hpp"
 #include "Filtro.hpp"
 #include "FiltroGenero.hpp"
+#include "FiltroLocation.hpp"
 #include "YearFilter.hpp"
 #include "DurationFilter.hpp"
 #include "FiltroTitleType.hpp"
 #include "PriceFilter.hpp"
 #include "Cinema.hpp"
+// #include "FiltroLocation.hpp"
 
 class SistemaDeFiltro
 {
@@ -19,15 +21,22 @@ private:
     HashMap<TitleType, std::vector<int>> baseFilmesTitleTypes;
     IntervalTreeYear *baseFilmesYear;
     IntervalTreeDuration *baseFilmesDuration;
+    IntervalTreePrice *baseCinemasPrice;
+    KDTree *baseCinemasLocation;
+    bool isCinema = false;
 
     const std::vector<Filme> *filmesRef;
     const std::vector<Cinema> *cinemasRef;
 
 public:
-    SistemaDeFiltro(const std::string &expression, std::vector<Filme> *filmesRef, std::vector<Cinema> *cinemasRef, IntervalTreeYear *baseFilmesYear, IntervalTreeDuration *baseFilmesDuration, HashMap<Genres, std::vector<int>> &baseFilmesGenres, HashMap<TitleType, std::vector<int>> &baseFilmesTitleTypes)
-        : baseFilmesGenres(baseFilmesGenres), baseFilmesTitleTypes(baseFilmesTitleTypes), baseFilmesYear(baseFilmesYear), baseFilmesDuration(baseFilmesDuration), filmesRef(filmesRef), cinemasRef(cinemasRef)
+    SistemaDeFiltro(const std::string &expression, bool isCinema,
+                    std::vector<Filme> *filmesRef, std::vector<Cinema> *cinemasRef,
+                    KDTree *baseCinemasLocation, IntervalTreePrice *baseCinemasPrice,
+                    IntervalTreeYear *baseFilmesYear, IntervalTreeDuration *baseFilmesDuration,
+                    HashMap<Genres, std::vector<int>> &baseFilmesGenres,
+                    HashMap<TitleType, std::vector<int>> &baseFilmesTitleTypes)
+        : isCinema(isCinema), baseFilmesGenres(baseFilmesGenres), baseCinemasLocation(baseCinemasLocation), baseFilmesTitleTypes(baseFilmesTitleTypes), baseFilmesYear(baseFilmesYear), baseCinemasPrice(baseCinemasPrice), baseFilmesDuration(baseFilmesDuration), filmesRef(filmesRef), cinemasRef(cinemasRef)
     {
-        // std::cout << "Construindo arvore de filtro a partir da expressao: " << expression << "\n";
         Tokenizer tokenizer(expression);
         auto tokens = tokenizer.tokenize();
         tokenizer.printTokens();
@@ -38,7 +47,6 @@ public:
             throw std::runtime_error("Erro ao analisar a expressao de filtro.");
         }
 
-        // std::cout << "Arvore de filtro criada com raiz: " << rootNode->value << "\n";
         if (rootNode->type != NodeType::OPERATOR)
         {
             std::cout << "Raiz da arvore nao eh um operador, mas um filtro: " << rootNode->value << "\n";
@@ -48,10 +56,7 @@ public:
             std::cout << "Raiz da arvore eh um operador: " << rootNode->op << "\n";
         }
         associateFilter(rootNode);
-        // std::cout << "Arvore de filtro construida com sucesso.\n";
-        // std::cout << "Imprimindo a arvore de filtro:\n";
-        // std::cout << "---------------------------------\n";
-        // std::cout << "Raiz: " << rootNode->value << "\n";
+
         if (rootNode->type == NodeType::OPERATOR)
         {
             std::cout << "Tipo da raiz: Operador (" << rootNode->op << ")\n";
@@ -84,6 +89,15 @@ public:
         }
         std::cout << "Base de filmes contem " << baseFilmes.getSize() << " itens.\n";
         std::cout << "Avaliacao da arvore de filtro iniciada.\n";
+        if (isCinema)
+        {
+            HashSet<int> resultado = avaliar(rootNode, baseFilmes, baseCinema);
+            if (!(rootNode->isCinema))
+            {
+                return cinemaTransform(resultado);
+            }
+            return resultado;
+        }
         return avaliar(rootNode, baseFilmes, baseCinema);
     }
 
@@ -107,7 +121,7 @@ private:
                 std::cerr << "Erro ao construir filtro a partir de: " << node->value << "\n";
                 throw std::runtime_error("Filtro inválido: " + node->value);
             }
-            if (dynamic_cast<FiltroAno *>(node->filter) || dynamic_cast<FiltroPreco *>(node->filter))
+            if (dynamic_cast<FiltroLocation *>(node->filter) || dynamic_cast<FiltroPreco *>(node->filter))
             {
                 node->isCinema = true;
             }
@@ -162,6 +176,26 @@ private:
             TitleType titleType = strToTitleType(args);
             return new FiltroTitleType(titleType, baseFilmesTitleTypes);
         }
+        else if (raw.find("#p") == 0)
+        {
+            std::string args = raw.substr(2);
+            args = args.substr(1, args.size() - 2); // Remove { e }
+            double precoMax = std::stod(args);
+            return new FiltroPreco(baseCinemasPrice->root, precoMax);
+        }
+        else if (raw.find("#l") == 0)
+        {
+            std::string args = raw.substr(2);
+            args = args.substr(1, args.size() - 2); // Remove { e }
+            int primeira = args.find(',');
+            int segunda = args.find(',', primeira + 1);
+
+            int x = std::stoi(args.substr(0, primeira));
+            int y = std::stoi(args.substr(primeira + 1, segunda - primeira - 1));
+            int r = std::stoi(args.substr(segunda + 1));
+
+            return new FiltroLocation(baseCinemasLocation, x, y, r);
+        }
         return nullptr;
     }
 
@@ -180,7 +214,7 @@ private:
         {
             auto sub = avaliar(node->right, baseFilmes, baseCinemas);
 
-            return subtrair(dynamic_cast<FiltroAno *>(node->filter) ||
+            return subtrair(dynamic_cast<FiltroLocation *>(node->filter) ||
                                     dynamic_cast<FiltroPreco *>(node->filter)
                                 ? baseCinemas
                                 : baseFilmes,
@@ -298,9 +332,6 @@ private:
     {
         if (!node)
             return;
-        deleteTree(node->left);
-        deleteTree(node->right);
-        delete node->filter;
         delete node;
     }
 
