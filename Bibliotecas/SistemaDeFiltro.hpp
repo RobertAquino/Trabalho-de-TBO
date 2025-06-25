@@ -5,8 +5,8 @@
 #include "Parser.hpp"
 #include "Filtro.hpp"
 #include "FiltroGenero.hpp"
-// #include "FiltroDuracao.hpp"
-// #include "FiltroAno.hpp"
+#include "YearFilter.hpp"
+#include "DurationFilter.hpp"
 #include "FiltroTitleType.hpp"
 
 class SistemaDeFiltro
@@ -15,13 +15,14 @@ private:
     Node *rootNode = nullptr;
     HashMap<Genres, std::vector<int>> baseFilmesGenres;
     HashMap<TitleType, std::vector<int>> baseFilmesTitleTypes;
-    // Estrutura da arvore de ano;
+    IntervalTreeYear *baseFilmesYear;
+    IntervalTreeDuration *baseFilmesDuration;
 
 public:
-    SistemaDeFiltro(const std::string &expression, HashMap<Genres, std::vector<int>> &baseFilmesGenres, HashMap<TitleType, std::vector<int>> &baseFilmesTitleTypes)
-        : baseFilmesGenres(baseFilmesGenres), baseFilmesTitleTypes(baseFilmesTitleTypes)
+    SistemaDeFiltro(const std::string &expression, IntervalTreeYear *baseFilmesYear, IntervalTreeDuration *baseFilmesDuration, HashMap<Genres, std::vector<int>> &baseFilmesGenres, HashMap<TitleType, std::vector<int>> &baseFilmesTitleTypes)
+        : baseFilmesGenres(baseFilmesGenres), baseFilmesTitleTypes(baseFilmesTitleTypes), baseFilmesYear(baseFilmesYear), baseFilmesDuration(baseFilmesDuration)
     {
-        std::cout << "Construindo arvore de filtro a partir da expressao: " << expression << "\n";
+        // std::cout << "Construindo arvore de filtro a partir da expressao: " << expression << "\n";
         Tokenizer tokenizer(expression);
         auto tokens = tokenizer.tokenize();
         tokenizer.printTokens();
@@ -32,7 +33,7 @@ public:
             throw std::runtime_error("Erro ao analisar a expressao de filtro.");
         }
 
-        std::cout << "Arvore de filtro criada com raiz: " << rootNode->value << "\n";
+        // std::cout << "Arvore de filtro criada com raiz: " << rootNode->value << "\n";
         if (rootNode->type != NodeType::OPERATOR)
         {
             std::cout << "Raiz da arvore nao eh um operador, mas um filtro: " << rootNode->value << "\n";
@@ -42,10 +43,10 @@ public:
             std::cout << "Raiz da arvore eh um operador: " << rootNode->op << "\n";
         }
         assosiateFilter(rootNode);
-        std::cout << "Arvore de filtro construida com sucesso.\n";
-        std::cout << "Imprimindo a arvore de filtro:\n";
-        std::cout << "---------------------------------\n";
-        std::cout << "Raiz: " << rootNode->value << "\n";
+        // std::cout << "Arvore de filtro construida com sucesso.\n";
+        // std::cout << "Imprimindo a arvore de filtro:\n";
+        // std::cout << "---------------------------------\n";
+        // std::cout << "Raiz: " << rootNode->value << "\n";
         if (rootNode->type == NodeType::OPERATOR)
         {
             std::cout << "Tipo da raiz: Operador (" << rootNode->op << ")\n";
@@ -123,11 +124,26 @@ private:
         }
         else if (raw.find("#d") == 0)
         {
-            // return new FiltroDuracao(...);
+            std::string args = raw.substr(2);
+            args = args.substr(1, args.size() - 2);
+            std::cout << "Construindo filtro de duracao a partir de" << args << '\n';
+            int virgula = args.find(',');
+
+            int minDuration = std::stoi(args.substr(0, virgula));
+            int maxDuration = std::stoi(args.substr(virgula + 1));
+
+            return new FiltroDuration(baseFilmesDuration->root, minDuration, maxDuration);
         }
         else if (raw.find("#a") == 0)
         {
-            // return new FiltroAno(...);
+            std::string args = raw.substr(2);
+            args = args.substr(1, args.size() - 2);
+            std::cout << "Construindo filtro de ano a partir de: " << args << '\n';
+            int virgula = args.find(',');
+
+            int minYear = std::stoi(args.substr(0, virgula));
+            int maxYear = std::stoi(args.substr(virgula + 1));
+            return new FiltroAno(baseFilmesYear->root, minYear, maxYear);
         }
         else if (raw.find("#t") == 0)
         {
@@ -161,6 +177,18 @@ private:
 
         if (node->op == '&')
         {
+            std::cout << "Aplicando interseção...\n";
+            if (esq.getSize() == 0 || dir.getSize() == 0)
+            {
+                std::cout << "Uma das partes da interseção está vazia, retornando vazia.\n";
+                return {};
+            }
+            std::cout << "Interseção entre " << esq.getSize() << " e " << dir.getSize() << " itens.\n";
+            if (esq.getSize() == 0 && dir.getSize() == 0)
+            {
+                std::cout << "Ambas as partes estão vazias, retornando vazia.\n";
+                return {};
+            }
             return interseccao(esq, dir);
         }
         else if (node->op == '|')
@@ -173,35 +201,37 @@ private:
 
     HashSet<int> interseccao(const HashSet<int> &a, const HashSet<int> &b)
     {
-        HashSet<int> resultado;
-        for (int i = 0; i < a.getSize(); ++i)
+        if (a.getSize() > b.getSize())
         {
-            std::vector<int> itens = a.getAll();
-            for (const auto &item : itens)
+            std::cout << "Interseção: A base A é maior que a base B, trocando as bases.\n";
+            return interseccao(b, a);
+        }
+        HashSet<int> resultado;
+        std::vector<int> itensA = a.getAll();
+        for (const int &itemA : itensA)
+        {
+            if (b.contains(itemA))
             {
-                if (b.contains(item))
-                {
-                    resultado.put(item);
-                }
+                resultado.put(itemA);
             }
         }
+        std::cout << "Interseção resultou em " << resultado.getSize() << " itens.\n";
         return resultado;
     }
 
     HashSet<int> uniao(const HashSet<int> &a, const HashSet<int> &b)
     {
         HashSet<int> resultado = a;
-        for (int i = 0; i < b.getSize(); ++i)
+
+        std::vector<int> elementosB = b.getAll();
+        for (const int &item : elementosB)
         {
-            std::vector<int> itens = b.getAll();
-            for (const auto &item : itens)
+            if (!resultado.contains(item))
             {
-                if (!resultado.contains(item))
-                {
-                    resultado.put(item);
-                }
+                resultado.put(item);
             }
         }
+
         return resultado;
     }
 

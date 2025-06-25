@@ -6,14 +6,22 @@
 class FiltroPreco : public Filtro
 {
 private:
+    NodePrice *root;
     double maxPrice;
-    HashMap<double, std::vector<int>> &result;
+
+    void collectIndex(double maxPrice, NodePrice *node, HashSet<int> &result);
+    HashSet<int> filterUntilMaxPrice(int maxPrice, NodePrice *root);
 
 public:
-    std::vector<int> filterUntilMaxPrice() override;
+    FiltroPreco(NodePrice *root, double maxPrice) : maxPrice(maxPrice), root(root) {}
+    HashSet<int> aplicar() override
+    {
+        HashSet<int> result = filterUntilMaxPrice(maxPrice, root);
+        return result;
+    }
 };
 
-void collectIndex(double maxPrice, NodePrice *node, HashMap<double, std::vector<int>> &result)
+void FiltroPreco::collectIndex(double maxPrice, NodePrice *node, HashSet<int> &baseFilmes)
 {
     if (node == nullptr)
     {
@@ -27,20 +35,20 @@ void collectIndex(double maxPrice, NodePrice *node, HashMap<double, std::vector<
     {
         for (int index = 0; index < node->indexList.size(); index++)
         {
-            result.(node->indexList[index]);
+            baseFilmes.put(node->indexList[index]);
         }
     }
 
     if (node->left != nullptr)
-        collectIndex(maxPrice, node->left, result);
+        collectIndex(maxPrice, node->left, baseFilmes);
 
     if (node->right != nullptr)
-        collectIndex(maxPrice, node->right, result);
+        collectIndex(maxPrice, node->right, baseFilmes);
 }
 
-std::vector<int> filterUntilMaxPrice(int maxPrice, NodePrice *root)
+HashSet<int> FiltroPreco::filterUntilMaxPrice(int maxPrice, NodePrice *root)
 {
-    std::vector<int> result;
+    HashSet<int> result;
 
     if (maxPrice < 0)
         return result;

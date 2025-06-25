@@ -12,6 +12,21 @@ private:
 public:
     HashSet() {}
 
+    HashSet(const HashSet<K> &other)
+        : hashMap(other.hashMap)
+    {
+    }
+
+    HashSet<K> &operator=(const HashSet<K> &other)
+    {
+        if (this == &other)
+        {
+            return *this;
+        }
+        this->hashMap = other.hashMap;
+        return *this;
+    }
+
     void put(const K &key)
     {
         hashMap.put(key, true);
@@ -35,7 +50,7 @@ public:
     std::vector<K> getAll() const
     {
         std::vector<K> keys;
-        for (int i = 0; i < hashMap.getSize(); ++i)
+        for (int i = 0; i < hashMap.getCapacity(); ++i)
         {
             std::vector<K> itens = hashMap.getKeysAtIndex(i);
             for (const auto &item : itens)
@@ -48,7 +63,7 @@ public:
 
     void print() const
     {
-        for (int i = 0; i < hashMap.getSize(); ++i)
+        for (int i = 0; i < hashMap.getCapacity(); ++i)
         {
             std::vector<K> itens = hashMap.getKeysAtIndex(i);
             for (const auto &item : itens)

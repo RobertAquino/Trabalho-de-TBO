@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <functional> // For std::reference_wrapper
 #include "Filme.hpp"
 
 template <typename K, typename V>
@@ -26,7 +27,7 @@ struct HashFunc
     }
 };
 
-// Especializações
+// HashFunc specializations (unchanged)
 template <>
 struct HashFunc<std::string>
 {
@@ -138,6 +139,68 @@ public:
         }
     }
 
+    // Construtor de Copia
+    HashMap(const HashMap<K, V> &other)
+        : capacity(other.capacity), size(0), primeIndex(other.primeIndex)
+    {
+        table = new HashNode<K, V> *[capacity];
+        for (int i = 0; i < capacity; ++i)
+        {
+            table[i] = nullptr;
+        }
+
+        for (int i = 0; i < other.capacity; ++i)
+        {
+            HashNode<K, V> *node = other.table[i];
+            while (node)
+            {
+                this->put(node->key, node->value);
+                node = node->next;
+            }
+        }
+    }
+
+    HashMap<K, V> &operator=(const HashMap<K, V> &other)
+    {
+        if (this == &other)
+        {
+            return *this;
+        }
+
+        for (int i = 0; i < capacity; ++i)
+        {
+            HashNode<K, V> *node = table[i];
+            while (node)
+            {
+                HashNode<K, V> *temp = node;
+                node = node->next;
+                delete temp;
+            }
+        }
+        delete[] table;
+
+        capacity = other.capacity;
+        size = 0;
+        primeIndex = other.primeIndex;
+
+        table = new HashNode<K, V> *[capacity];
+        for (int i = 0; i < capacity; ++i)
+        {
+            table[i] = nullptr;
+        }
+        for (int i = 0; i < other.capacity; ++i)
+        {
+            HashNode<K, V> *node = other.table[i];
+            while (node)
+            {
+                this->put(node->key, node->value);
+                node = node->next;
+            }
+        }
+
+        return *this;
+    }
+
     ~HashMap()
     {
         for (int i = 0; i < capacity; ++i)
@@ -151,6 +214,11 @@ public:
             }
         }
         delete[] table;
+    }
+
+    int getCapacity() const
+    {
+        return capacity;
     }
 
     void put(const K &key, const V &value)
@@ -176,6 +244,23 @@ public:
         }
     }
 
+    // Non-const get returns a reference to the value
+    std::optional<std::reference_wrapper<V>> get(const K &key)
+    {
+        int index = hash(key);
+        HashNode<K, V> *node = table[index];
+        while (node != nullptr)
+        {
+            if (node->key == key)
+            {
+                return std::optional<std::reference_wrapper<V>>(std::ref(node->value));
+            }
+            node = node->next;
+        }
+        return std::nullopt;
+    }
+
+    // Const get returns a copy of the value
     std::optional<V> get(const K &key) const
     {
         int index = hash(key);
@@ -217,6 +302,7 @@ public:
         }
         throw std::out_of_range("Key not found in HashMap.");
     }
+
     bool containsKey(const K &key) const
     {
         int index = hash(key);
@@ -231,21 +317,23 @@ public:
         }
         return false;
     }
+
     int getSize() const
     {
         return size;
     }
+
     bool isEmpty() const
     {
         return size == 0;
     }
+
     void resize()
     {
         int oldCapacity = capacity;
 
         if (primeIndex + 1 >= sizeof(primes) / sizeof(primes[0]))
         {
-            // No more primes available, handle this error or use a different growth strategy
             throw std::runtime_error("HashMap maximum capacity reached - no more prime numbers for resizing.");
         }
 
@@ -256,6 +344,9 @@ public:
         {
             table[i] = nullptr;
         }
+
+        this->size = 0;
+
         for (int i = 0; i < oldCapacity; ++i)
         {
             HashNode<K, V> *node = oldTable[i];
@@ -271,7 +362,6 @@ public:
         delete[] oldTable;
     }
 
-    // GET KEYS AT INDEX
     std::vector<K> getKeysAtIndex(int index) const
     {
         std::vector<K> keys;

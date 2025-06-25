@@ -1,8 +1,28 @@
-
+#pragma once
 #include "IntervalTreeYear.hpp"
+#include "Filtro.hpp"
 #include <vector>
 
-void collectIndex(int maxYear, int minYear, NodeYear *node, std::vector<int> &result)
+class FiltroAno : public Filtro
+{
+private:
+    NodeYear *root;
+    int maxYear;
+    int minYear;
+
+    void collectIndex(int maxYear, int minYear, NodeYear *node, HashSet<int> &result);
+    HashSet<int> filterByInterval(int maxYear, int minYear, NodeYear *root);
+
+public:
+    FiltroAno(NodeYear *root, int maxYear, int minYear) : root(root), maxYear(maxYear), minYear(minYear) {}
+
+    HashSet<int> aplicar() override
+    {
+        return filterByInterval(maxYear, minYear, root);
+    }
+};
+
+void FiltroAno::collectIndex(int maxYear, int minYear, NodeYear *node, HashSet<int> &result)
 {
     if (node == nullptr)
     {
@@ -16,7 +36,7 @@ void collectIndex(int maxYear, int minYear, NodeYear *node, std::vector<int> &re
     {
         for (int index = 0; index < node->indexList.size(); index++)
         {
-            result.push_back(node->indexList[index]);
+            result.put(node->indexList[index]);
         }
     }
 
@@ -27,21 +47,13 @@ void collectIndex(int maxYear, int minYear, NodeYear *node, std::vector<int> &re
         collectIndex(maxYear, minYear, node->right, result);
 }
 
-std::vector<int> filterByInterval(int maxYear, int minYear, NodeYear *root)
+HashSet<int> FiltroAno::filterByInterval(int maxYear, int minYear, NodeYear *root)
 {
-    std::vector<int> result;
+    HashSet<int> result;
 
     if (minYear < 0 || maxYear < minYear)
         return result;
 
     collectIndex(maxYear, minYear, root, result);
-}
-std::vector<int> filterByYear(int year, NodeYear *root)
-{
-    std::vector<int> result;
-    if (year < 0)
-        return result;
-
-    collectIndex(year, year, root, result);
     return result;
 }
