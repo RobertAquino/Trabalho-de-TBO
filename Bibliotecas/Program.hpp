@@ -160,7 +160,7 @@ public:
             std::cin.ignore();
             std::getline(std::cin, expressao);
 
-            std::cout << "Criando arvore de expressao...";
+            std::cout << "Criando arvore de expressao...\n";
             start = std::chrono::high_resolution_clock::now();
             if (opc == 1)
             {

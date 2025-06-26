@@ -45,7 +45,7 @@ public:
     {
         Node *expr = parseOr();
         expect(TokenType::END);
-        printTree(expr);
+        // printTree(expr);
 
         if (!expr)
         {
@@ -53,14 +53,14 @@ public:
             return nullptr;
         }
 
-        std::cout << "Tipo do nó raiz: " << (expr->type == NodeType::OPERATOR ? "Operador" : "Filtro") << '\n';
+        // std::cout << "Tipo do nó raiz: " << (expr->type == NodeType::OPERATOR ? "Operador" : "Filtro") << '\n';
         if (expr->type == NodeType::OPERATOR)
         {
-            std::cout << "Encontrado operador na raiz da arvore: " << expr->op << "\n";
+            // std::cout << "Encontrado operador na raiz da arvore: " << expr->op << "\n";
         }
         else if (expr->type == NodeType::FILTER)
         {
-            std::cout << "Encontrado filtro na raiz da arvore: " << expr->value << "\n";
+            // std::cout << "Encontrado filtro na raiz da arvore: " << expr->value << "\n";
         }
         else
         {
@@ -112,7 +112,7 @@ private:
 
         if (node->type == NodeType::OPERATOR && node->op == '|')
         {
-            std::cout << "Encontrado operador OR na raiz da arvore: " << node->value << "\n";
+            // std::cout << "Encontrado operador OR na raiz da arvore: " << node->value << "\n";
         }
         return node;
     }
@@ -131,7 +131,7 @@ private:
 
         if (node->type == NodeType::OPERATOR && node->op == '&')
         {
-            std::cout << "Encontrado operador AND na raiz da arvore: " << node->value << "\n";
+            // std::cout << "Encontrado operador AND na raiz da arvore: " << node->value << "\n";
         }
         return node;
     }
@@ -154,7 +154,7 @@ private:
             throw std::runtime_error("Erro: fim dos tokens alcançado inesperadamente.");
         }
 
-        std::cout << "Token atual: " << tokens[pos].value << "\n";
+        // std::cout << "Token atual: " << tokens[pos].value << "\n";
         if (match(TokenType::PAREN_OPEN))
         {
             Node *node = parseOr();
@@ -170,7 +170,7 @@ private:
             std::string args;
             if (check(TokenType::SYMBOL, "{") || check(TokenType::SYMBOL, "["))
             {
-                std::cout << "Encontrado bloco de argumentos: " + filtroRaw + "\n";
+                // std::cout << "Encontrado bloco de argumentos: " + filtroRaw + "\n";
                 args = parseArgumentBlock();
                 filtroRaw += args;
             }
@@ -193,7 +193,7 @@ private:
         }
 
         result += advance().value; // fecha o bloco
-        std::cout << "Bloco de argumentos parseado: " << result << "\n";
+        // std::cout << "Bloco de argumentos parseado: " << result << "\n";
         return result;
     }
 

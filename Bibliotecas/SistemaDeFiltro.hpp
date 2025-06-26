@@ -49,21 +49,22 @@ public:
 
         if (rootNode->type != NodeType::OPERATOR)
         {
-            std::cout << "Raiz da arvore nao eh um operador, mas um filtro: " << rootNode->value << "\n";
+            // std::cout << "Raiz da arvore nao eh um operador, mas um filtro: " << rootNode->value << "\n";
         }
         else
         {
-            std::cout << "Raiz da arvore eh um operador: " << rootNode->op << "\n";
+            // std::cout << "Raiz da arvore eh um operador: " << rootNode->op << "\n";
         }
         associateFilter(rootNode);
+        propagarIsCinema(rootNode);
 
         if (rootNode->type == NodeType::OPERATOR)
         {
-            std::cout << "Tipo da raiz: Operador (" << rootNode->op << ")\n";
+            // std::cout << "Tipo da raiz: Operador (" << rootNode->op << ")\n";
         }
         else if (rootNode->type == NodeType::FILTER)
         {
-            std::cout << "Tipo da raiz: Filtro (" << rootNode->value << ")\n";
+            // std::cout << "Tipo da raiz: Filtro (" << rootNode->value << ")\n";
         }
         printNode(rootNode, 0);
     }
@@ -73,22 +74,37 @@ public:
         deleteTree(rootNode);
     }
 
+    bool propagarIsCinema(Node *node)
+    {
+        if (!node)
+            return false;
+
+        if (node->type == NodeType::FILTER)
+            return node->isCinema; // já foi setado em associateFilter
+
+        bool esq = propagarIsCinema(node->left);
+        bool dir = propagarIsCinema(node->right);
+
+        node->isCinema = esq || dir;
+        return node->isCinema;
+    }
+
     // Avalia a expressão de filtro e retorna os filmes filtrados
     HashSet<int> filtrar(const HashSet<int> &baseFilmes, const HashSet<int> &baseCinema)
     {
         if (!rootNode)
         {
-            std::cerr << "Erro: raiz da árvore de filtro não está definida.\n";
+            std::cerr << "Erro: raiz da arvore de filtro não esta definida.\n";
             throw std::runtime_error("Árvore de filtro não inicializada.");
         }
-        std::cout << "Iniciando avaliação da árvore de filtro...\n";
+        std::cout << "Iniciando avaliacao da arvore de filtro...\n";
         if (baseFilmes.getSize() == 0)
         {
-            std::cerr << "Erro: baseFilmes de filmes está vazia.\n";
+            std::cerr << "Erro: baseFilmes de filmes esta vazia.\n";
             throw std::runtime_error("Base de filmes vazia.");
         }
         std::cout << "Base de filmes contem " << baseFilmes.getSize() << " itens.\n";
-        std::cout << "Avaliacao da arvore de filtro iniciada.\n";
+        // std::cout << "Avaliacao da arvore de filtro iniciada.\n";
         if (isCinema)
         {
             HashSet<int> resultado = avaliar(rootNode, baseFilmes, baseCinema);
@@ -114,7 +130,7 @@ private:
             return;
         if (node->type == NodeType::FILTER)
         {
-            std::cout << "Associando filtro: " << node->value << "\n";
+            // std::cout << "Associando filtro: " << node->value << "\n";
             node->filter = construirFiltroAPartirDe(node->value);
             if (!node->filter)
             {
@@ -125,7 +141,7 @@ private:
             {
                 node->isCinema = true;
             }
-            std::cout << "Filtro associado com sucesso: " << node->value << "\n";
+            // std::cout << "Filtro associado com sucesso: " << node->value << "\n";
         }
         associateFilter(node->left);
         associateFilter(node->right);
@@ -140,16 +156,16 @@ private:
             args = args.substr(1, args.size() - 2); // Remove { e }
             // Converte a string args para Genres
             // Exemplo: "#g{action}" → "action"
-            std::cout << "Construindo filtro de genero a partir de: " << args << "\n";
+            // std::cout << "Construindo filtro de genero a partir de: " << args << "\n";
             Genres genre = strToGenre(args);
-            std::cout << "Gênero convertido: " << static_cast<int>(genre) << "\n";
+            // std::cout << "Gênero convertido: " << static_cast<int>(genre) << "\n";
             return new FiltroGenero(genre, baseFilmesGenres);
         }
         else if (raw.find("#d") == 0)
         {
             std::string args = raw.substr(2);
             args = args.substr(1, args.size() - 2);
-            std::cout << "Construindo filtro de duracao a partir de" << args << '\n';
+            // std::cout << "Construindo filtro de duracao a partir de" << args << '\n';
             int virgula = args.find(',');
 
             int minDuration = std::stoi(args.substr(0, virgula));
@@ -161,7 +177,7 @@ private:
         {
             std::string args = raw.substr(2);
             args = args.substr(1, args.size() - 2);
-            std::cout << "Construindo filtro de ano a partir de: " << args << '\n';
+            // std::cout << "Construindo filtro de ano a partir de: " << args << '\n';
             int virgula = args.find(',');
 
             int minYear = std::stoi(args.substr(0, virgula));
@@ -206,7 +222,7 @@ private:
 
         if (node->type == NodeType::FILTER)
         {
-            std::cout << "Aplicando filtro: " << node->value << "\n";
+            // std::cout << "Aplicando filtro: " << node->value << "\n";
             return node->filter->aplicar();
         }
 
@@ -237,13 +253,13 @@ private:
 
         if (node->op == '&')
         {
-            std::cout << "Aplicando interseção...\n";
+            std::cout << "Aplicando intersecao...\n";
             if (esq.getSize() == 0 || dir.getSize() == 0)
             {
-                std::cout << "Uma das partes da interseção está vazia, retornando vazia.\n";
+                std::cout << "Uma das partes da intersecao esta vazia, retornando vazia.\n";
                 return {};
             }
-            std::cout << "Interseção entre " << esq.getSize() << " e " << dir.getSize() << " itens.\n";
+            std::cout << "Intersecao entre " << esq.getSize() << " e " << dir.getSize() << " itens.\n";
             if (esq.getSize() == 0 && dir.getSize() == 0)
             {
                 std::cout << "Ambas as partes estão vazias, retornando vazia.\n";
@@ -259,9 +275,10 @@ private:
         return {};
     }
 
-    HashSet<int> cinemaTransform(const HashSet<int> filmes)
+    HashSet<int> cinemaTransform(const HashSet<int> &filmes)
     {
         HashSet<int> resultado;
+        std::cout << "Transformando base de filmes em cinemas\n";
         std::vector<int> filmesId = filmes.getAll();
         for (const auto &id : filmesId)
         {
@@ -278,7 +295,7 @@ private:
     {
         if (a.getSize() > b.getSize())
         {
-            std::cout << "Interseção: A base A é maior que a base B, trocando as bases.\n";
+            std::cout << "Intersecao: A base A eh maior que a base B, trocando as bases.\n";
             return interseccao(b, a);
         }
         HashSet<int> resultado;
@@ -290,7 +307,7 @@ private:
                 resultado.put(itemA);
             }
         }
-        std::cout << "Interseção resultou em " << resultado.getSize() << " itens.\n";
+        std::cout << "Intersecao resultou em " << resultado.getSize() << " itens.\n";
         return resultado;
     }
 
@@ -307,6 +324,7 @@ private:
             }
         }
 
+        std::cout << "Uniao resultou em " << resultado.getSize() << " itens.\n";
         return resultado;
     }
 
