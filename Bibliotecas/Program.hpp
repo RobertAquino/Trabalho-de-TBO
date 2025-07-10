@@ -124,6 +124,7 @@ public:
         // Calcula o tempo de leitura dos cinemas
         end = std::chrono::high_resolution_clock::now();
         duration = end - start;
+        std::cout << "Tempo de leitura dos arquivos: " << duration.count() << " segundos" << std::endl;
     }
     ~Program()
     {
@@ -141,7 +142,7 @@ public:
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration = end - start;
         std::chrono::duration<double> totalDuration = std::chrono::duration<double>(0);
-        std::cout << "Tempo de carregamento dos HashMaps: " << duration.count() << " segundos" << std::endl;
+        std::cout << "Tempo das estruturas de dados: " << duration.count() << " segundos" << std::endl;
 
         std::string expressao;
         bool isRunning = true;
